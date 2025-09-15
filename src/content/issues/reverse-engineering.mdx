@@ -1,0 +1,33 @@
+---
+title: Reverse Engineering
+description: Guides and Tutorials for Crackme's, CTF challenges, and more!
+issue_number: 2
+layout: "../../layouts/Issue.astro"
+---
+
+import { getEntry } from "astro:content";
+import ArticleTeaser from "../../components/ArticleTeaser.astro";
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+import Empty from "../../components/Empty.astro";
+import TitleLink from "../../components/TitleLink.astro";
+
+export const components = {
+  h1: props => <h1 class="col-span-12 text-6xl text-left" {...props} />
+}
+
+export const card_intro = await getEntry(
+    "articles",
+    "re-featured-articles",
+);
+
+# {frontmatter.title}
+
+<ArticleTeaser
+  components={{ h1: props => <TitleLink slug={card_intro.slug} {...props} />}}
+  markdown={card_intro}
+  href={`/articles/${card_intro.slug}`}
+  class="xl:col-span-8 col-span-12"
+  cta="Check out "
+  title={card_intro.data.title}
+/>
+

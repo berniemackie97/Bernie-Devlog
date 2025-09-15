@@ -1,11 +1,15 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import { getEntry } from "astro:content";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const entry = await getEntry("issues", "featured");
+
+const issueSlug = `/issues/${entry.slug}`;
+const { Content, headings } = await entry.render();
 ---
 
-<Layout>
-	<Welcome />
+<Layout issueSlug={issueSlug} title={entry.data.title} frontmatter={entry.data}>
+  <div transition:name={entry.data.title}>
+    <Content />
+  </div>
 </Layout>

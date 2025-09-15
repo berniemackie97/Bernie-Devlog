@@ -1,0 +1,43 @@
+---
+title: Bernie's Devlog.
+description: Learn with me, or just follow my journey.
+issue_number: 1
+layout: "../../layouts/Issue.astro"
+---
+
+import { getEntry } from "astro:content";
+import Empty from "../../components/Empty.astro"
+import ArticleTeaser from "../../components/ArticleTeaser.astro";
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+import TitleLink from "../../components/TitleLink.astro";
+
+export const featured_issues = await getEntry(
+    "articles",
+    "featured-issues",
+);
+export const sidebar_article = await getEntry("articles", "what-are-issues");
+
+export const components = {
+  h1: props => <h1 class="col-span-12 text-3xl lg:text-9xl font-display text-center text-balance" {...props} />
+}
+
+# {frontmatter.title}
+
+<ArticleTeaser
+  components={{ h1: props => <TitleLink slug={featured_issues.slug} {...props} />}}
+  markdown={featured_issues}
+  href={`/articles/${featured_issues.slug}`}
+  class="xl:col-span-8 col-span-12"
+  cta="Check out "
+  title={featured_issues.data.title}
+/>
+
+<ArticleTeaser
+  components={{ h1: props => <TitleLink slug={sidebar_article.slug} {...props} />}}
+  markdown={sidebar_article}
+  href={`/articles/${sidebar_article.slug}`}
+  class="lg:col-span-8 xl:col-span-4 xl:sticky top-10 self-start row-span-2 prose-xl col-span-12"
+  cta="Check it out!"
+  title={sidebar_article.data.title}
+/>
+

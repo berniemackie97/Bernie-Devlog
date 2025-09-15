@@ -1,0 +1,26 @@
+---
+import Empty from "./Empty.astro";
+import MarkdownSnippet from "./Markdown.astro";
+import FancyParagraph from "./Content/FancyParagraph.astro";
+
+const { markdown, class: className, components, cta, href } = Astro.props;
+
+const link = href ?? `/${markdown.collection ?? "issues"}/${markdown.slug}`;
+---
+
+<div class:list={[className, "prose prose-xl"]}>
+  <div transition:name={markdown.data.title}>
+    <MarkdownSnippet
+      markdown={markdown}
+      components={{
+        ...components,
+        More: Empty,
+        FancyParagraph: FancyParagraph,
+      }}
+    />
+  </div>
+  <a
+    href={link}
+    class="btn btn-block btn-outline btn-primary">{cta}</a
+  >
+</div>

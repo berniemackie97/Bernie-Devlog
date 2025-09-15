@@ -1,32 +1,52 @@
-# Astro Starter Kit: Basics
+# Technonomicon: Summon the book.
 
 ```sh
-npm create astro@latest -- --template basics
+  npm create astro@latest -- --template technomancy-dev/technonomicon
+  cd ./technonomicon
+  npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+> 🧙‍♂️ **Seasoned technomancer?** Delete this file. Have fun!
+
+![just-the-basics](./readme-image.png)
 
 ## 🚀 Project Structure
 
-Inside of your Astro project, you'll see the following folders and files:
+Inside of your Book of the devs, you'll see the following folders and files:
 
 ```text
-/
 ├── public/
 │   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
+├── src/
+│   ├── components/
+│   │   ├── Cards/
+│   │   ├── Content/
+│   │   ├── Icons/
+│   │   ├── ArticleTeaser.astro
+│   │   ├── Empty.astro
+│   │   ├── Markdown.astro
+│   │   ├── More.astro
+│   │   └── Navigation.astro
+│   ├── layouts/
+│   │   ├── Article.astro
+│   │   └── Layout.astro
+│   └── pages/
+│       ├── articles/
+│       ├── cards/
+│       ├── issues/
+│       └── index.astro
 └── package.json
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+Astro (the magic which powers the technonomicon) looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+It has come pre-loaded with components to manipulate content, and create Cards.
+
+It has come pre-loaded with components to manipulate content, and create Cards.
+`Empty` and `More` are simple components used to negate, or pass on particular MDX components when remixing content. `Markdown` takes a markdown source and components and renders them. `ArticleTeaser.astro` grabs just the teaser info from an article. `Navigation.astro` is a navigation (duh).
+
+Any static assets, like images, can be placed in the `public/` directory.
 
 ## 🧞 Commands
 
@@ -43,4 +63,5 @@ All commands are run from the root of the project, from a terminal:
 
 ## 👀 Want to learn more?
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Feel free to check [our documentation](https://theme.technomancy.dev) 
+<!-- or jump into our [Discord server](https://astro.build/chat). -->
