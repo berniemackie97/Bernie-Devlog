@@ -1,6 +1,6 @@
 ---
-title: Reverse Engineering
-description: Guides and Tutorials for Crackme's, CTF challenges, and more!
+title: The Clean Room
+description: Safe labs for unsafe ideas.
 issue_number: 2
 layout: "../../layouts/Issue.astro"
 ---
@@ -20,7 +20,7 @@ export const card_intro = await getEntry(
     "re-featured-articles",
 );
 
-# {frontmatter.title}
+# {frontmatter.description}
 
 <ArticleTeaser
   components={{ h1: props => <TitleLink slug={card_intro.slug} {...props} />}}

@@ -23,11 +23,12 @@ const cardsCollection = defineCollection({
   schema: z.object({
     name: z.string(),
     tagline: z.string(),
-    art: z.number(),
+    art: z.string(),
   }),
 });
 // Export a single `collections` object to register your collection(s)
 export const collections = {
   articles: articlesCollection,
   issues: issuesCollection,
+  cards: cardsCollection,
 };
