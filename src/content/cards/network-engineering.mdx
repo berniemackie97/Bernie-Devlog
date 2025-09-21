@@ -1,73 +1,72 @@
 ---
 name: Network Engineering
-tagline: All about the Network!
+tagline: Learn the network by building the tools.
 art: https://images.unsplash.com/photo-1667984390553-7f439e6ae401?q=80&w=2064&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
-mark: Fun
-type: blog
+mark: Lab
+type: holo
+featured: true
+card_path: /cards/network-engineering
+issue_path: /issues/network-engineering
 ---
 
 import { getEntry } from "astro:content";
-
 import MarkdownSnippet from "../../components/ArticleTeaser.astro";
-export const technonomicon = await getEntry(
-  "articles",
-  "details-network-engineering",
-);
+import { paths } from "../../utils/paths";
+
+export const CARD_PATH  = frontmatter.card_path  ?? paths.cards.networkEngineering;
+export const ISSUE_PATH = frontmatter.issue_path ?? paths.issues.networkEngineering;
+
+export const detailsMD = await getEntry("articles", "details-network-engineering");
 
 <Card>
   <ArtSection>
     <Top>
-      <Name>
-        {frontmatter.name}
-      </Name>
-
-      <Tagline>
-        {frontmatter.tagline}
-      </Tagline>
-
-      <Mark>
-        {frontmatter.mark}
-      </Mark>
+      <Name>{frontmatter.name}</Name>
+      <Tagline>{frontmatter.tagline}</Tagline>
+      <Mark>{frontmatter.mark}</Mark>
     </Top>
 
     <Art src={frontmatter.art} />
 
     <Box>
-    <p>Network Engineering</p>
+      <p>What we’ll build</p>
       <BoxList>
-        * Binary Analysis
-        * Deobfuscation
-        * Assembly, C++, C#
+        * Packet sniffer (pcap + filters)
+        * Ping & Traceroute (ICMP/TTL)
+        * Port scanner (TCP SYN)
+        * DNS query tool
+        * Tiny HTTP client/server
       </BoxList>
     </Box>
   </ArtSection>
 
   <Body>
-    This issue is all about reverse engineering. Tutorials/Guides for CTF Challenges, Crackme's, etc.
-     We will also be building our own tools along the way.
+    Each article is a small lab: build a tool, run it, read the packets.
   </Body>
 
-  <Tip>
-    Some programming knowledge required.
-  </Tip>
+  <Tip>Linux VMs recommended. Lab traffic only.</Tip>
 
-  <Button href="/cards/network-engineering">Read More</Button>
+  {/* Shown in lists/teasers. Hidden on the card page via .is-card-page wrapper */}
+  <Button class="card-cta" href={CARD_PATH} aria-label="Read more about Network Engineering">
+    Read More
+  </Button>
 </Card>
 
 <More>
-  # Overview & Planning
+  ## About this issue
 
-  Before we start here is a little write up on how I planned for this project, and what data I have gathered. 
+  We’re learning networks by building them—one tool at a time. Articles ship progressively; each is a self-contained lab with code, captures, and checks.
+
+  **Early roadmap**
+  - **01 · Packet Sniffer** — libpcap/BPF, capture/parse frames, filter by MAC/IP/port.
+  - **02 · Ping** — craft ICMP echo, TTL hops, basic RTT stats.
+  - **03 · Traceroute** — incremental TTL, parse ICMP time-exceeded, map the path.
+  - **04 · Port Scanner** — TCP SYN, service banners, slow/stealth modes.
+  - **05 · DNS Tool** — build a resolver; A/AAAA/CNAME, caching + `/etc/hosts`.
+  - **06 · Tiny HTTP** — raw sockets, GET/POST; TLS hand-off to curl/openssl.
+  - **07 · Wireshark Skills** — filters you’ll actually use; shareable captures.
 
   <div class="border p-6">
-    <MarkdownSnippet
-      markdown={technonomicon}
-      href={`/issues/reverse-engineering`}
-      cta="Read More"
-    />
+    <MarkdownSnippet markdown={detailsMD} href={ISSUE_PATH} cta="See the issue details" />
   </div>
-
-  There are a few tags that are important to the Technonomicon, and `More` might be the most important of all.
-
-  The contents of a `More` tag can be discarded, by rendering `More` as `Empty`
 </More>

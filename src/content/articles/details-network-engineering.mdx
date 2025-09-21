@@ -1,35 +1,24 @@
 ---
-title: What is Network Engineering
-description: Introducing the technonomicon.
+title: Network Engineering — Issue Overview
+description: How this issue runs, what you need, and where to start.
 layout: ../../layouts/Article.astro
 issue_number: 1
 ---
 
 # {frontmatter.title}
 
-Issues are at their core a collection of things. These can be `articles` links to other parts of the web. Images, Data Visualizations and much more.
+We’ll learn networking by **building small tools**. Each article is a standalone lab: write it, run it against captures or a lab network, and verify what you see on the wire.
 
-They are meant to tie things together in a consumable package.
+## Format
+Short posts that stack. Every lab includes:
+- the goal and a minimal plan,
+- commands you can copy,
+- a quick check to prove it worked,
+- a capture or screenshot you can compare with.
 
-If you are making a course, the course could be made of `issues`, which represent topics.
+## What you need
+- One or two Linux VMs  
+- Basic terminal usage  
+- Space to capture traffic (pcap) in a **lab-only** environment
 
-The `issues` bring together many lessons into `articles`.
-
-There are components made for rendering articles in an issue. Like the `<MarkdownSnippet/>` component.
-This component is used when you want to render the article directly, instead of just linking to it, or cutting an excerpt.
-
-```mdx
-import { getEntry } from "astro:content";
-import ArticleTeaser from "../../components/ArticleTeaser.astro";
-export const article = await getEntry(
-    "articles",
-    "article",
-);
-<ArticleTeaser
-    markdown={article}
-    components={{    
-        {/* Components to override or add */}
-    }}
-    cta="Read more about getting started"    
-/>
-```
+> New labs publish progressively. The full list lives on the issue page.

@@ -15,7 +15,7 @@ export const featured_issues = await getEntry(
     "articles",
     "featured-issues",
 );
-export const sidebar_article = await getEntry("articles", "what-are-issues");
+export const sidebar_article = await getEntry("articles", "featured-issues-sidebar");
 
 export const components = {
   h1: props => <h1 class="col-span-12 text-3xl lg:text-9xl font-display text-center text-balance" {...props} />
