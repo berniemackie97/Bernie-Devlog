@@ -1,44 +1,81 @@
 ---
-title: Featured Issues.
-description: Collection of featured issues.
+title: Featured Issues
+description: What’s active right now.
 issue_number: 1
 ---
 
-import { getEntry } from "astro:content";
-import Card from "../../components/Cards/NormalCard/Card.astro"
-import CardHolo from "../../components/Cards/HoloFullArtCard/Card.astro"
-import TipCard from "../../components/Cards/TipCard/Card.astro"
+import { getCollection } from "astro:content";
+import Card from "../../components/Cards/NormalCard/Card.astro";
+import CardHolo from "../../components/Cards/HoloFullArtCard/Card.astro";
+import TipCard from "../../components/Cards/TipCard/Card.astro";
 
-export const components = {
-  Container: props => <div class="flex flex-row-reverse justify-center w-full my-12 flex-wrap lg:flex-nowrap gap-2" {...props} />,
-  HoloText: props => <p class="text-center holographic-text font-display mt-4 text-xl lg:text-4xl" {...props} />
-}
+export const UI = {
+  Section: (props) => (
+    <section class="mx-auto max-w-screen-2xl px-3 my-10" {...props} />
+  ),
+  Title: (props) => (
+    <h1 class="font-display text-center text-4xl md:text-5xl mb-2" {...props} />
+  ),
+  Blurb: (props) => (
+    <p class="text-center holographic-text font-display mt-2 text-lg md:text-2xl" {...props} />
+  ),
+  // Use flex to center items and preserve card sizing
+  Grid: (props) => (
+    <div class="w-full mt-8 flex flex-wrap justify-center gap-4 md:gap-6" {...props} />
+  ),
+  CtaRow: (props) => <div class="mt-10 flex justify-center" {...props} />,
+  Cta: (props) => (
+    <a href="/issues/page/1" class="btn btn-primary btn-lg" aria-label="Browse all issues" {...props}>
+      Browse all issues
+    </a>
+  ),
+};
 
-export const reCard = await getEntry(
-    "cards",
-    "ethical-hacking",
-);
+export const allCards = await getCollection("cards");
+export const featuredCards = allCards
+  .filter((c) => c.data?.featured === true)
+  .sort((a, b) => (b.data?.priority ?? 0) - (a.data?.priority ?? 0));
 
-export const networkCard = await getEntry(
-    "cards",
-    "network-engineering",
-);
+export const pickCard = (entry) => {
+  const t = String(entry.data?.type || "").toLowerCase();
+  if (t === "holo" || t === "holo-full") return CardHolo;
+  if (t === "tip") return TipCard;
+  return Card;
+};
 
-# {frontmatter.title}
+<UI.Section>
+  <UI.Title>{frontmatter.title}</UI.Title>
+  <UI.Blurb>{frontmatter.description}</UI.Blurb>
 
-<HoloText>{frontmatter.description}</HoloText>
+  {
+    featuredCards.length > 0 ? (
+      <UI.Grid>
+        {featuredCards.map((entry) => {
+          const Comp = pickCard(entry);
+          // Constrain each card; stays centered with flex and wraps to 2–3 per row
+          return (
+            <div key={entry.slug} class="w-full sm:w-[440px] md:w-[460px]">
+              <Comp markdown={entry} />
+            </div>
+          );
+        })}
+      </UI.Grid>
+    ) : (
+      <p class="opacity-75 mt-6 text-center">
+        No featured issues right now. Check the full catalog below.
+      </p>
+    )
+  }
 
-<Container>
-  <Card markdown={networkCard} />
-  <CardHolo markdown={reCard} />
-</Container>
+  <More>
+    <UI.CtaRow>
+      <UI.Cta />
+    </UI.CtaRow>
+    <p class="mt-6 opacity-75 text-center">
+      Featured issues are the ones getting the most updates. The full archive lives on the
+      <a class="link link-hover ml-1" href="/issues">All Issues</a> page.
+    </p>
+  </More>
+</UI.Section>
 
-{/* <More>
 
-<Container>
-  <Card markdown={reCard} />
-  <Card markdown={reCard} />
-</Container>
-</More> */}
-
-Featured issues, are just the issues currently receiving the most updates. Please check out the rest of our issues 

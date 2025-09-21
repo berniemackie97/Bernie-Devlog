@@ -24,6 +24,11 @@ const cardsCollection = defineCollection({
     name: z.string(),
     tagline: z.string(),
     art: z.string(),
+    card_path: z.string().optional(),
+    issue_path: z.string().optional(),
+    type: z.enum(["holo", "holo-full", "tip", "normal"]).default("normal"),
+    featured: z.boolean().default(false),               // <-- enables Featured filter
+    priority: z.number().optional(),                    // <-- lets you sort featured
   }),
 });
 // Export a single `collections` object to register your collection(s)

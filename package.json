@@ -17,6 +17,7 @@
     "astro": "^5.13.7",
     "astro-vtbot": "^1.7.9",
     "gray-matter": "^4.0.3",
+    "pnpm": "^10.17.0",
     "remark-cli": "^12.0.0",
     "remark-frontmatter": "^5.0.0",
     "remark-mdx": "^3.0.1",

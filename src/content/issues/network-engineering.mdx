@@ -1,0 +1,123 @@
+---
+title: "Packet Bench — Packets, Ports & Practice"
+description: "Hands-on network engineering: build tiny tools, wire small labs, and learn by reading real traffic."
+issue_number: 2
+layout: "../../layouts/Issue.astro"
+---
+
+import { getEntry } from "astro:content";
+import ArticleTeaser from "../../components/ArticleTeaser.astro";
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+import TitleLink from "../../components/TitleLink.astro";
+
+export const featured = await getEntry("articles", "featured-network-engineering");
+export const latest   = await getEntry("articles", "what-are-articles");
+
+export const components = {
+  h1: (props) => (
+    <h1 class="col-span-12 text-3xl lg:text-9xl font-display text-center text-balance" {...props} />
+  )
+};
+
+# {frontmatter.title}
+
+<p class="col-span-12 xl:col-span-8 opacity-80 mt-2 text-center mx-auto">
+  {frontmatter.description}
+</p>
+
+<div class="col-span-12 xl:col-span-8 mx-auto mt-4">
+  <FancyParagraph>
+    We’ll write small utilities, spin up tiny topologies, and verify everything with captures.
+    Short labs. Clear outputs. Real packets.
+  </FancyParagraph>
+</div>
+
+<hr class="col-span-12 my-8 opacity-20" />
+
+<ArticleTeaser
+  components={{ h1: (p) => <TitleLink slug={featured.slug} {...p} /> }}
+  markdown={featured}
+  href={`/articles/${featured.slug}`}
+  class="xl:col-span-8 col-span-12"
+/>
+
+<div class="lg:col-span-8 xl:col-span-4 xl:sticky top-10 self-start col-span-12">
+  <div class="prose prose-xl rounded-2xl border border-base-content/15 p-5">
+    <h3 class="mt-0">Browse all articles</h3>
+    <p class="opacity-80">
+      Looking for everything in this issue? Jump to the full list of write-ups, labs,
+      and updates.
+    </p>
+    <a href="/articles" class="btn btn-primary btn-block">See all articles</a>
+  </div>
+
+  <div class="prose prose-xl rounded-2xl border border-base-content/15 p-5 mt-4">
+    <h3 class="mt-0">Latest drop</h3>
+    <p class="opacity-80 mb-3">
+      The newest piece in Packet Bench is ready to read.
+    </p>
+    <a href={`/articles/${latest.slug}`} class="btn btn-outline btn-block">
+      Open “{latest.data.title}”
+    </a>
+  </div>
+</div>
+
+<hr class="col-span-12 my-10 opacity-20" />
+
+<h2 class="col-span-12 font-display text-3xl md:text-4xl">Core skills</h2>
+
+<div class="col-span-12 xl:col-span-8">
+  <ul class="list-disc ml-6 space-y-1">
+    <li>Build a <strong>pcap sniffer</strong> and filter by MAC/IP/port</li>
+    <li>Trace a path with <strong>ICMP TTL</strong> (ping / traceroute)</li>
+    <li>Scan a lab subnet with a <strong>TCP SYN</strong> probe</li>
+    <li>Resolve names with a tiny <strong>DNS client</strong></li>
+    <li>Speak plain <strong>HTTP</strong> to see requests, responses, and TLS hand-off</li>
+  </ul>
+
+  <blockquote class="mt-6 not-italic border-l-4 pl-4 opacity-90">
+    “If you can capture it, you can understand it.”
+  </blockquote>
+</div>
+
+<hr class="col-span-12 my-8 opacity-20" />
+
+<h2 class="col-span-12 font-display text-3xl md:text-4xl">On deck</h2>
+
+<div class="col-span-12 xl:col-span-8">
+  <div class="rounded-xl border border-base-content/15 p-4 sm:p-6">
+    <ul class="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm md:text-base leading-relaxed">
+      <li><span class="font-medium">Tiny HTTP</span> — raw sockets, GET/POST; TLS hand-off</li>
+      <li><span class="font-medium">Wireshark habits</span> — filters you’ll actually use</li>
+      <li><span class="font-medium">DNS resolver</span> — A/AAAA/CNAME, simple caching</li>
+      <li><span class="font-medium">Stealth scans</span> — slow/quiet TCP techniques</li>
+    </ul>
+  </div>
+  <p class="opacity-70 text-sm mt-2">New drops land here as they’re ready.</p>
+</div>
+
+<hr class="col-span-12 my-8 opacity-20" />
+
+<h2 class="col-span-12 font-display text-3xl md:text-4xl">How this issue works</h2>
+
+<div class="col-span-12 xl:col-span-8">
+  <ul class="list-disc ml-6 space-y-1">
+    <li><strong>One lab per article.</strong> Commands, expected outputs, and a quick check.</li>
+    <li><strong>Reproducible.</strong> Use a couple of VMs or a sandboxed topology—lab traffic only.</li>
+    <li><strong>Progressive releases.</strong> New pieces appear as soon as they’re done.</li>
+    <li><strong>Tools-first.</strong> Write small utilities, then read the captures.</li>
+  </ul>
+  <p class="text-sm opacity-70 mt-4">
+    Tip: Bookmark this cover page — it’s the hub for the latest articles and the roadmap.
+  </p>
+</div>
+
+<hr class="col-span-12 my-10 opacity-20" />
+
+<section class="col-span-full">
+  <p class="max-w-prose text-left leading-relaxed text-xs opacity-60
+            whitespace-normal break-normal hyphens-none not-prose">
+    Packet Bench is a running, hands-on issue about networks. Built with tiny tools, packet captures,
+    and curiosity. All labs are for educational use in controlled environments only.
+  </p>
+</section>
