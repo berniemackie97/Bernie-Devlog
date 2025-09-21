@@ -26,7 +26,8 @@ const cardsCollection = defineCollection({
     art: z.string(),
     card_path: z.string().optional(),
     issue_path: z.string().optional(),
-    type: z.enum(["holo", "holo-full", "tip", "normal"]).default("normal"),
+    title: z.string().optional().default("Just a Card"),
+    type: z.enum(["holo", "holo-full", "blog", "tip", "normal"]).default("normal"),
     featured: z.boolean().default(false),               // <-- enables Featured filter
     priority: z.number().optional(),                    // <-- lets you sort featured
   }),
