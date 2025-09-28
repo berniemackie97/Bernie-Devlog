@@ -1,37 +1,39 @@
 # Styling Reference
 
-## Design Tokens
-- Tailwind config (`tailwind.config.mjs`) extends fonts, gradient animation, and registers DaisyUI themes.
-- Primary fonts are loaded in `Layout.astro`; update font-face declarations there when swapping typography.
+## Palette & Tokens
+- Core colors are defined as CSS custom properties per theme in `Layout.astro`.
+- Tailwind exposes matching aliases (`text-plum`, `bg-lavender`, etc.). Update both the CSS variables and `tailwind.config.mjs` if new tones are introduced.
+- DaisyUI themes (`country`, `nightpress`, `retro`, `newsprint`) mirror the theme picker and power buttons and form elements.
+
+## Typography
+- Google Fonts `Playfair Display`, `Newsreader`, `Cormorant Garamond`, and `IBM Plex Sans` are available. Theme selection swaps between them.
+- Tailwind font families map to the current theme via CSS variables: `.font-display` and `.font-serif` automatically follow the active palette.
+
+## Theme Picker
+- `src/components/ThemePicker.astro` renders a palette switcher with localStorage persistence.
+- Themes are declared in `src/utils/themes.ts`; add new palettes (id, label, swatch, optional `isDark`) there.
+- Root `<html>` receives `data-theme`, which tailwind/daisyui listen to. Dark-mode variants rely on the `isDark` flag to set `color-scheme`.
 
 ## Layout Spacing
 - Global padding lives on `Layout.astro` (`px-3 sm:px-6 lg:px-10`). Adjust once to affect every page.
-- Issue grids (`layouts/Issue.astro`) and article grids (`pages/articles/[...slug].astro`) use Tailwind gap utilities. Modify the gap classes to change density.
+- Issue and article grids use responsive `gap` classes (`layouts/Issue.astro`, `pages/articles/[...slug].astro`).
 
-## Navigation
-- `components/Navigation.astro` is fully responsive. Update gradient, font sizes, or CTA behavior here. Buttons inherit DaisyUI variants.
+## Navigation & Masthead
+- `components/Navigation.astro` houses the headline, issue badge, and theme picker. Edit gradient/borders here for masthead tweaks.
 
 ## Table of Contents
-- `components/TableOfContents/TableOfContents.astro` supports a `variant` prop (`default` or `minimal`). Modify the class strings in this file to restyle the container or typography.
-- Nested list styling lives in `TOCHeading.astro`.
+- `components/TableOfContents/TableOfContents.astro` supports `variant="minimal"` for collapsible mobile view. Typography classes live in this component and `TOCHeading.astro`.
 
 ## Cards
-- Normal, Holo, and Tip cards share subcomponents under `components/Cards`. Update colors or layout in those files and MDX cards will inherit the changes.
-- Card aspect ratios are controlled via `aspect-[63/88]` utilities; change here if a new format is required.
+- Normal/Holo/Tip cards live under `components/Cards`. Shared design changes propagate automatically.
+- Card proportions default to `aspect-[63/88]`; adjust for new formats.
 
 ## Magazine Issue Stack
-- The issue archive layers gradients, spines, and drop shadows using palettes defined at the top of `issues/page/[page].astro`.
-- Adjust `coverPalette`, `spinePalette`, or `shadowPalette` to refresh the look.
-- Rotations (`lg:-rotate-1` / `lg:rotate-1`) and hover transforms create the physical stack effect; tweak these classes for subtler or louder motion.
-
-## Buttons and Links
-- DaisyUI `btn`, `btn-outline`, and `btn-primary` classes are used across teasers and navigation. Adjust DaisyUI theme tokens in `tailwind.config.mjs` to rebrand globally.
+- `pages/issues/page/[page].astro` controls gradients (`coverPalette`), spines, and shadows. Update the arrays to adjust the look while keeping layout intact.
 
 ## Responsiveness Patterns
-- Prefer `flex` or `grid` with responsive `gap` classes (`gap-4`, `sm:gap-6`, `lg:gap-8`).
-- Sticky sidebars use `lg:sticky lg:top-24`; adjust the offset if the header height changes.
-- Use utility stacks like `space-y-*` for vertical rhythm on mobile.
+- Flex and grid utilities with responsive gaps keep content breathable. Sticky sidebars use `lg:sticky lg:top-28`—tune if header height changes.
 
-## Adding New Utilities
-- Extend Tailwind via `theme.extend` (e.g., custom colors, spacing) in `tailwind.config.mjs`.
-- For complex styles, create a component-specific CSS module or add scoped `<style>` blocks in Astro components.
+## Adding Utilities
+- Extend Tailwind via `theme.extend` for bespoke spacing, shadows, etc.
+- Use scoped `<style>` blocks in Astro components for component-specific customizations.

@@ -22,38 +22,17 @@ const cardsByIssue = new Map(
     return [issueSlug, card];
   }),
 );
-
-const coverPalette = [
-  "from-[#FEEBC8]/80 via-transparent to-base-100",
-  "from-[#BFDBFE]/80 via-transparent to-base-100",
-  "from-[#F8D7E3]/80 via-transparent to-base-100",
-  "from-[#BBF7D0]/80 via-transparent to-base-100",
-];
-
-const spinePalette = [
-  "bg-[#F97316]",
-  "bg-[#6366F1]",
-  "bg-[#EC4899]",
-  "bg-[#0EA5E9]",
-];
-
-const shadowPalette = [
-  "shadow-[rgba(249,115,22,0.25)_0px_30px_60px_-25px]",
-  "shadow-[rgba(99,102,241,0.25)_0px_30px_60px_-25px]",
-  "shadow-[rgba(236,72,153,0.25)_0px_30px_60px_-25px]",
-  "shadow-[rgba(14,165,233,0.25)_0px_30px_60px_-25px]",
-];
 ---
 
 <Layout title={title} frontmatter={null}>
   <section class="px-3 sm:px-6 lg:px-10 pb-16 space-y-12">
     <header class="flex flex-wrap items-end justify-between gap-6">
       <div class="max-w-xl space-y-3">
-        <p class="text-xs uppercase tracking-[0.4em] text-base-content/60">Print queue</p>
+        <p class="text-xs uppercase tracking-[0.4em] text-muted">Print queue</p>
         <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-tight">
           Stacks fresh from the newsroom
         </h1>
-        <p class="text-sm sm:text-base text-base-content/70">
+        <p class="text-sm sm:text-base text-muted">
           Flip through active issues like a stack of weekend magazines. Every cover links to a full
           set of articles, lab notes, and release plans.
         </p>
@@ -85,80 +64,84 @@ const shadowPalette = [
     </header>
 
     <div class="grid gap-10 lg:grid-cols-[minmax(0,320px)_1fr]">
-      <aside class="order-2 lg:order-1 space-y-6 border border-base-content/10 bg-base-100/70 backdrop-blur rounded-3xl p-6 lg:sticky lg:top-28">
+      <aside
+        class="order-2 lg:order-1 space-y-6 border border-[color:var(--color-border)] backdrop-blur rounded-3xl p-6 lg:sticky lg:top-28"
+        style="background: var(--surface-card); box-shadow: var(--shadow-card);"
+      >
         <h2 class="font-display text-2xl">How to read</h2>
-        <ol class="list-decimal pl-4 space-y-2 text-sm text-base-content/70">
+        <ol class="list-decimal pl-4 space-y-2 text-sm text-muted">
           <li>Pick an issue cover to open the table of contents.</li>
           <li>Use the roadmap inside each issue to follow the release cadence.</li>
           <li>Add interesting cards to your backlog with the CTA buttons.</li>
         </ol>
-        <div class="rounded-2xl border border-dashed border-base-content/20 p-4 text-xs uppercase tracking-[0.3em] text-base-content/50">
+        <div class="rounded-2xl border border-dashed border-[color:var(--color-border)] p-4 text-xs uppercase tracking-[0.3em] text-muted">
           Fresh ink lands here first. Check back on Mondays for new drops.
         </div>
       </aside>
 
       <div class="order-1 lg:order-2 space-y-10">
         {issues.map((issue: any, index: number) => {
-          const gradient = coverPalette[index % coverPalette.length];
-          const spine = spinePalette[index % spinePalette.length];
-          const shadow = shadowPalette[index % shadowPalette.length];
+          const paletteIndex = index % 4;
           const rotation = index % 2 === 0 ? "lg:-rotate-1" : "lg:rotate-1";
           const linkedCard = cardsByIssue.get(issue.slug);
           const cardHref = linkedCard
             ? linkedCard.data.card_path ?? `/cards/${linkedCard.slug}`
             : null;
 
+          const styleVars = `--stack-gradient-current: var(--stack-gradient-${paletteIndex}); --stack-spine-current: var(--stack-spine-${paletteIndex});`;
+
           return (
             <article
-              class={`group relative isolate overflow-hidden rounded-[28px] border border-base-content/10 bg-base-100/95 px-6 py-8 sm:px-8 sm:py-12 transition-all duration-500 ${shadow} hover:-translate-y-3 hover:shadow-[rgba(15,23,42,0.35)_0px_35px_90px_-25px] ${rotation}`}
+              style={styleVars}
+              class={`stack-card group relative isolate overflow-hidden rounded-[28px] border border-[color:var(--color-border)] px-6 py-8 sm:px-8 sm:py-12 transition-all duration-500 ${rotation}`}
             >
               <span
-                class={`pointer-events-none absolute inset-[-18px] rounded-[32px] bg-gradient-to-br ${gradient} opacity-70`}
+                class="stack-overlay pointer-events-none absolute inset-[-18px] rounded-[32px] opacity-80"
                 aria-hidden="true"
               ></span>
               <span
-                class={`pointer-events-none absolute -left-6 top-0 h-full w-4 rounded-sm ${spine}`}
+                class="stack-spine pointer-events-none absolute -left-6 top-0 h-full w-4 rounded-sm opacity-80"
                 aria-hidden="true"
               ></span>
               <span
-                class="pointer-events-none absolute right-10 top-10 hidden h-16 w-16 border border-dashed border-base-content/20 md:block"
+                class="pointer-events-none absolute right-10 top-10 hidden h-16 w-16 border border-dashed border-[color:var(--color-border)] md:block"
                 aria-hidden="true"
               ></span>
 
               <div class="relative space-y-6">
                 <header class="flex flex-wrap items-start justify-between gap-6">
-                  <div class="space-y-2">
-                    <span class="text-xs font-semibold uppercase tracking-[0.4em] text-base-content/60">
+                  <div class="space-y-2 max-w-xl">
+                    <span class="text-xs font-semibold uppercase tracking-[0.4em] text-muted">
                       Issue {issue.data.issue_number}
                     </span>
-                    <h2 class="font-display text-2xl sm:text-3xl lg:text-4xl max-w-xl">
+                    <h2 class="font-display text-2xl sm:text-3xl lg:text-4xl">
                       {issue.data.title}
                     </h2>
                   </div>
                   <span
                     transition:animate="fade"
                     transition:name={`issue_number_${issue.data.issue_number}`}
-                    class="font-lithops text-6xl sm:text-7xl lg:text-8xl text-base-content/80"
+                    class="font-lithops text-6xl sm:text-7xl lg:text-8xl text-plum"
                   >
                     {romanize(issue.data.issue_number)}
                   </span>
                 </header>
 
-                <p class="max-w-2xl text-base-content/70">
+                <p class="max-w-2xl text-muted">
                   {issue.data.description}
                 </p>
 
-                <div class="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.3em] text-base-content/50">
+                <div class="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.3em] text-muted">
                   <span class="inline-flex items-center gap-2">
-                    <span class="h-2 w-2 rounded-full bg-primary/70"></span>
+                    <span class="h-2 w-2 rounded-full bg-plum/80"></span>
                     Active articles
                   </span>
                   <span class="inline-flex items-center gap-2">
-                    <span class="h-2 w-2 rounded-full bg-secondary/70"></span>
+                    <span class="h-2 w-2 rounded-full bg-lavender/80"></span>
                     Progressive release
                   </span>
                   <span class="inline-flex items-center gap-2">
-                    <span class="h-2 w-2 rounded-full bg-accent/70"></span>
+                    <span class="h-2 w-2 rounded-full bg-olive/70"></span>
                     Roadmap inside
                   </span>
                 </div>
@@ -181,4 +164,3 @@ const shadowPalette = [
     </div>
   </section>
 </Layout>
-

@@ -1,6 +1,7 @@
 ---
 const { issue, issue_slug } = Astro.props;
 import romanize from "../utils/romanize";
+import ThemePicker from "./ThemePicker.astro";
 
 const formattedDate = new Intl.DateTimeFormat("en-US", {
   weekday: "long",
@@ -10,49 +11,54 @@ const formattedDate = new Intl.DateTimeFormat("en-US", {
 }).format(new Date());
 ---
 
-<nav class="w-full px-3 sm:px-6 lg:px-10 py-4">
-  <div class="flex flex-wrap items-end justify-between gap-4 sm:gap-6">
-    <a class="flex-1 min-w-[220px] sm:min-w-[260px] max-w-full" href="/">
-      <h1 class="font-display text-3xl sm:text-4xl lg:text-7xl leading-none">
-        Bernie.Dev
-      </h1>
-      <p class="mt-1 text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-transparent bg-clip-text bg-gradient-to-r from-primary via-base-content to-base-content">
-        My obscure devlog
-      </p>
-    </a>
+<nav class="w-full px-3 sm:px-6 lg:px-10 py-6">
+  <div class="rounded-3xl border border-[color:var(--color-border)] px-4 sm:px-6 py-4" style="background: var(--surface-card); box-shadow: var(--shadow-card);">
+    <div class="flex flex-wrap items-end justify-between gap-4 sm:gap-6">
+      <a class="flex-1 min-w-[220px] sm:min-w-[260px] max-w-full" href="/">
+        <p class="text-xs uppercase tracking-[0.45em] text-muted">Bernie.Dev</p>
+        <h1 class="font-display text-3xl sm:text-4xl lg:text-6xl leading-tight text-ink">
+          The Bernie.Dev Journal
+        </h1>
+        <p class="mt-2 inline-flex items-center gap-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.35em] text-transparent bg-clip-text bg-gradient-to-r from-plum via-ink to-olive">
+          Stories • Labs • Issues
+        </p>
+      </a>
 
-    <div class="flex basis-full justify-between sm:basis-auto sm:justify-end">
-      <a
-        href={issue_slug ?? "/issues/page/1"}
-        class:list={[
-          "inline-flex items-baseline gap-3 rounded-lg px-3 py-2 sm:px-4 sm:py-3 transition-colors duration-200",
-          issue ? "bg-base-100/40 hover:bg-base-100/60" : "bg-base-100/20",
-        ]}
-        aria-label={issue ? `Open issue ${romanize(issue)}` : "Browse issues"}
-      >
-        <span class="text-[0.7rem] font-semibold uppercase tracking-[0.4em] text-base-content/60">
-          Issue
-        </span>
-        <span
-          transition:name={`issue_number_${issue ?? "unknown"}`}
-          transition:animate="fade"
-          class="bg-gradient-to-br from-primary via-base-content to-base-content text-transparent bg-clip-text font-lithops leading-none text-5xl sm:text-6xl lg:text-8xl"
+      <div class="flex flex-col items-end gap-3 sm:gap-4">
+        <ThemePicker />
+        <a
+          href={issue_slug ?? "/issues/page/1"}
+          class:list={[
+            "inline-flex items-baseline gap-3 rounded-xl px-4 py-3 transition-all duration-200 border border-[color:var(--color-border)]",
+            issue ? "bg-highlight/70 hover:bg-highlight" : "bg-highlight/40 hover:bg-highlight/70",
+          ]}
+          aria-label={issue ? `Open issue ${romanize(issue)}` : "Browse issues"}
         >
-          {issue ? romanize(issue) : "TBD"}
-        </span>
+          <span class="text-[0.7rem] font-semibold uppercase tracking-[0.4em] text-muted">
+            Issue
+          </span>
+          <span
+            transition:name={`issue_number_${issue ?? "unknown"}`}
+            transition:animate="fade"
+            class="bg-gradient-to-br from-plum via-ink to-olive text-transparent bg-clip-text font-lithops leading-none text-5xl sm:text-6xl lg:text-8xl"
+          >
+            {issue ? romanize(issue) : "TBD"}
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-[color:var(--color-border)] pt-3 sm:pt-4">
+      <span class="text-sm font-semibold text-muted">
+        {formattedDate}
+      </span>
+      <a
+        href="/issues/page/1"
+        class="btn btn-sm sm:btn-md btn-outline btn-primary"
+      >
+        All Issues
       </a>
     </div>
   </div>
-
-  <div class="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-base-content/20 pt-3 sm:pt-4">
-    <span class="text-sm font-semibold text-base-content">
-      {formattedDate}
-    </span>
-    <a
-      href="/issues/page/1"
-      class="btn btn-sm sm:btn-md btn-outline btn-primary"
-    >
-      All Issues
-    </a>
-  </div>
 </nav>
+

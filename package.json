@@ -8,7 +8,11 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "format": "remark . --output --ext md,mdx"
+    "format": "remark . --output --ext md,mdx",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -30,7 +34,10 @@
     "daisyui": "^4.7.2",
     "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
-    "prettier-plugin-astro": "^0.13.0"
+    "prettier-plugin-astro": "^0.13.0",
+    "@playwright/test": "^1.48.2",
+    "vitest": "^2.0.5",
+    "happy-dom": "^15.11.0"
   },
   "remarkConfig": {
     "settings": {

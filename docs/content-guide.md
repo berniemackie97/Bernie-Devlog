@@ -45,3 +45,5 @@
 - Run `pnpm dev` to see live updates.
 - Visit `/issues/page/1` to review the magazine stack layout; `/issues` and `/issues/page` redirect there automatically.
 - Run `pnpm run build` before release to ensure type-safe content and valid routes.
+- Unit tests live under `tests/unit`; run `pnpm test` to execute them.
+- End-to-end smoke: `pnpm test:e2e` (requires a prior `pnpm run build`; the Playwright config boots `pnpm preview`).

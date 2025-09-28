@@ -3,6 +3,7 @@ import { ClientRouter } from "astro:transitions";
 import VtBotDebug from "astro-vtbot/components/VtBotDebug.astro";
 import Linter from "astro-vtbot/components/Linter.astro";
 import Navigation from "../components/Navigation.astro";
+import { DEFAULT_THEME } from "../utils/themes";
 interface Props {
   title: string;
   frontmatter: any;
@@ -13,19 +14,39 @@ const { title, frontmatter, issueSlug } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme={DEFAULT_THEME}>
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content="Astro description" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+    />
     <title>{title}</title>
+    <script is:inline>
+      (() => {
+        if (typeof window === "undefined") return;
+        const KEY = "berniedev-theme";
+        try {
+          const stored = window.localStorage.getItem(KEY);
+          if (stored) {
+            document.documentElement.setAttribute("data-theme", stored);
+          }
+        } catch (err) {
+          console.warn("theme persistence unavailable", err);
+        }
+      })();
+    </script>
     <VtBotDebug />
     <Linter expanded />
     <ClientRouter />
   </head>
-  <body class="font-serif bg-base-100 min-h-screen pb-16 max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-10">
+  <body class="min-h-screen pb-16 max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-10">
     <Navigation issue_slug={issueSlug} issue={frontmatter?.issue_number} />
     <div transition:animate="fade">
       <slot />
@@ -35,16 +56,58 @@ const { title, frontmatter, issueSlug } = Astro.props;
       @tailwind components;
       @tailwind utilities;
 
+      :root {
+        --font-display: "Playfair Display", serif;
+        --font-body: "Newsreader", serif;
+
+        --color-cream: #ffffe3;
+        --color-lavender: #dbd4ff;
+        --color-olive: #808034;
+        --color-plum: #723480;
+        --color-ink: #2f213c;
+        --color-muted: #6f6686;
+        --color-border: #c8c0e2;
+        --color-highlight: #f5eaff;
+        --color-info: #7aa3ff;
+        --color-success: #5a9962;
+        --color-warning: #f2c26b;
+        --color-error: #d4647a;
+
+        --bg-gradient: radial-gradient(circle at top, rgba(219, 212, 255, 0.25), transparent 55%), #ffffe3;
+        --surface-card: rgba(255, 255, 227, 0.85);
+        --shadow-card: 0px 15px 40px -20px rgba(114, 52, 128, 0.15);
+        --stack-shadow: 0px 30px 60px -25px rgba(114, 52, 128, 0.25);
+        --stack-shadow-hover: 0px 35px 90px -25px rgba(50, 33, 60, 0.35);
+
+        --stack-gradient-0: linear-gradient(135deg, rgba(255, 255, 227, 0.95), rgba(255, 255, 227, 0.35), rgba(219, 212, 255, 0.3));
+        --stack-gradient-1: linear-gradient(135deg, rgba(219, 212, 255, 0.95), rgba(255, 255, 227, 0.25), rgba(255, 255, 255, 0.4));
+        --stack-gradient-2: linear-gradient(135deg, rgba(128, 128, 52, 0.85), rgba(255, 255, 227, 0.25), rgba(219, 212, 255, 0.25));
+        --stack-gradient-3: linear-gradient(135deg, rgba(114, 52, 128, 0.85), rgba(219, 212, 255, 0.3), rgba(255, 255, 227, 0.25));
+
+        --stack-spine-0: rgba(128, 128, 52, 0.85);
+        --stack-spine-1: rgba(114, 52, 128, 0.85);
+        --stack-spine-2: rgba(219, 212, 255, 0.85);
+        --stack-spine-3: rgba(128, 128, 52, 0.85);
+      }
+
+      body {
+        background: var(--bg-gradient);
+        color: var(--color-ink);
+        font-family: var(--font-body), serif;
+      }
+
+      a {
+        transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
+      }
+
+      ::selection {
+        background-color: rgba(219, 212, 255, 0.7);
+        color: var(--color-ink);
+      }
+
       @font-face {
         font-family: "Young Serif";
         src: url("/fonts/YoungSerif-Regular.ttf") format("truetype");
-        font-weight: normal;
-        font-style: normal;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: "Lithops";
-        src: url("/fonts/Lithops-Regular.ttf") format("truetype");
         font-weight: normal;
         font-style: normal;
         font-display: swap;
@@ -63,9 +126,153 @@ const { title, frontmatter, issueSlug } = Astro.props;
         font-style: normal;
         font-display: swap;
       }
+
+      [data-theme="nightpress"] {
+        --font-display: "Cormorant Garamond", serif;
+        --font-body: "IBM Plex Sans", sans-serif;
+        --color-cream: #1f1a24;
+        --color-lavender: #5e4b8b;
+        --color-olive: #a9b665;
+        --color-plum: #d8c4ff;
+        --color-ink: #f1ecff;
+        --color-muted: #b9acd6;
+        --color-border: #3a2a4d;
+        --color-highlight: rgba(94, 75, 139, 0.3);
+        --color-info: #7aa3ff;
+        --color-success: #8dc891;
+        --color-warning: #f2c26b;
+        --color-error: #f889ab;
+
+        --bg-gradient: radial-gradient(circle at top, rgba(94, 75, 139, 0.35), transparent 55%), #1f1a24;
+        --surface-card: rgba(36, 28, 43, 0.92);
+        --shadow-card: 0px 15px 40px -20px rgba(216, 196, 255, 0.18);
+        --stack-shadow: 0px 30px 60px -25px rgba(117, 90, 150, 0.45);
+        --stack-shadow-hover: 0px 35px 90px -25px rgba(82, 60, 120, 0.55);
+
+        --stack-gradient-0: linear-gradient(135deg, rgba(31, 26, 36, 0.95), rgba(94, 75, 139, 0.6), rgba(20, 17, 26, 0.85));
+        --stack-gradient-1: linear-gradient(135deg, rgba(94, 75, 139, 0.85), rgba(30, 24, 40, 0.7), rgba(32, 26, 46, 0.6));
+        --stack-gradient-2: linear-gradient(135deg, rgba(169, 182, 101, 0.6), rgba(31, 26, 36, 0.7), rgba(241, 236, 255, 0.3));
+        --stack-gradient-3: linear-gradient(135deg, rgba(216, 196, 255, 0.65), rgba(94, 75, 139, 0.45), rgba(31, 26, 36, 0.8));
+
+        --stack-spine-0: rgba(169, 182, 101, 0.8);
+        --stack-spine-1: rgba(216, 196, 255, 0.8);
+        --stack-spine-2: rgba(94, 75, 139, 0.9);
+        --stack-spine-3: rgba(122, 163, 255, 0.8);
+      }
+
+      [data-theme="retro"] {
+        --font-display: "Basteleur Bold", serif;
+        --font-body: "Young Serif", serif;
+        --color-cream: #2b2836;
+        --color-lavender: #bd93f9;
+        --color-olive: #84fba2;
+        --color-plum: #f3e4a2;
+        --color-ink: #cedeff;
+        --color-muted: #9fa7d1;
+        --color-border: #3f3a52;
+        --color-highlight: rgba(189, 147, 249, 0.2);
+        --color-info: #93b4ff;
+        --color-success: #84fba2;
+        --color-warning: #ffb793;
+        --color-error: #f36a66;
+
+        --bg-gradient: radial-gradient(circle at top, rgba(189, 147, 249, 0.25), transparent 55%), #2b2836;
+        --surface-card: rgba(59, 55, 74, 0.92);
+        --shadow-card: 0px 15px 40px -20px rgba(189, 147, 249, 0.22);
+        --stack-shadow: 0px 30px 60px -25px rgba(147, 121, 214, 0.45);
+        --stack-shadow-hover: 0px 35px 90px -25px rgba(132, 251, 162, 0.35);
+
+        --stack-gradient-0: linear-gradient(135deg, rgba(43, 40, 54, 0.92), rgba(189, 147, 249, 0.4), rgba(38, 34, 48, 0.88));
+        --stack-gradient-1: linear-gradient(135deg, rgba(189, 147, 249, 0.75), rgba(132, 251, 162, 0.35), rgba(243, 228, 162, 0.55));
+        --stack-gradient-2: linear-gradient(135deg, rgba(132, 251, 162, 0.65), rgba(189, 147, 249, 0.45), rgba(62, 58, 76, 0.85));
+        --stack-gradient-3: linear-gradient(135deg, rgba(243, 228, 162, 0.75), rgba(189, 147, 249, 0.45), rgba(43, 40, 54, 0.85));
+
+        --stack-spine-0: rgba(132, 251, 162, 0.75);
+        --stack-spine-1: rgba(189, 147, 249, 0.8);
+        --stack-spine-2: rgba(243, 228, 162, 0.75);
+        --stack-spine-3: rgba(132, 251, 162, 0.75);
+      }
+
+      [data-theme="newsprint"] {
+        --font-display: "Playfair Display", serif;
+        --font-body: "Newsreader", serif;
+        --color-cream: #fff7e6;
+        --color-lavender: #e6ded1;
+        --color-olive: #5a4632;
+        --color-plum: #a05c5c;
+        --color-ink: #2f2118;
+        --color-muted: #7c6b5e;
+        --color-border: #d9c8b3;
+        --color-highlight: rgba(160, 92, 92, 0.18);
+        --color-info: #7aa3ff;
+        --color-success: #789174;
+        --color-warning: #f0b674;
+        --color-error: #c05b5b;
+
+        --bg-gradient: radial-gradient(circle at top, rgba(240, 224, 201, 0.4), transparent 55%), #fff7e6;
+        --surface-card: rgba(255, 247, 230, 0.92);
+        --shadow-card: 0px 15px 40px -20px rgba(160, 92, 92, 0.18);
+        --stack-shadow: 0px 30px 60px -25px rgba(160, 92, 92, 0.25);
+        --stack-shadow-hover: 0px 35px 90px -25px rgba(122, 82, 82, 0.3);
+
+        --stack-gradient-0: linear-gradient(135deg, rgba(255, 247, 230, 0.95), rgba(240, 224, 201, 0.35), rgba(214, 198, 170, 0.4));
+        --stack-gradient-1: linear-gradient(135deg, rgba(230, 222, 209, 0.9), rgba(255, 247, 230, 0.3), rgba(240, 224, 201, 0.3));
+        --stack-gradient-2: linear-gradient(135deg, rgba(160, 92, 92, 0.45), rgba(255, 247, 230, 0.4), rgba(90, 70, 50, 0.2));
+        --stack-gradient-3: linear-gradient(135deg, rgba(149, 123, 104, 0.4), rgba(255, 247, 230, 0.35), rgba(214, 198, 170, 0.5));
+
+        --stack-spine-0: rgba(90, 70, 50, 0.85);
+        --stack-spine-1: rgba(160, 92, 92, 0.85);
+        --stack-spine-2: rgba(193, 154, 107, 0.8);
+        --stack-spine-3: rgba(160, 92, 92, 0.85);
+      }
+
+      @layer base {
+        body {
+          font-family: var(--font-body), serif;
+          color: var(--color-ink);
+        }
+        .font-display {
+          font-family: var(--font-display), serif;
+        }
+        .font-serif {
+          font-family: var(--font-body), serif;
+        }
+      }
+
+      a:hover {
+        color: var(--color-plum);
+      }
+
+      .stack-card {
+        background: var(--surface-card);
+        box-shadow: var(--stack-shadow);
+      }
+
+      .stack-card:hover {
+        box-shadow: var(--stack-shadow-hover);
+      }
+
+      .stack-overlay {
+        background-image: var(--stack-gradient-current);
+        background-size: cover;
+      }
+
+      .stack-spine {
+        background: var(--stack-spine-current);
+      }
+
       @layer utilities {
         .holographic {
-          @apply transform-gpu bg-gradient-to-r from-secondary via-white bg-300% to-accent from-50% to-75% animate-gradient;
+          @apply transform-gpu bg-gradient-to-r from-[rgba(114,52,128,0.85)] via-[rgba(255,255,227,0.9)] to-[rgba(128,128,52,0.85)] bg-300% animate-gradient;
+        }
+        [data-theme="nightpress"] .holographic {
+          @apply bg-gradient-to-r from-[rgba(216,196,255,0.8)] via-[rgba(94,75,139,0.65)] to-[rgba(169,182,101,0.75)];
+        }
+        [data-theme="retro"] .holographic {
+          @apply bg-gradient-to-r from-[rgba(132,251,162,0.75)] via-[rgba(189,147,249,0.65)] to-[rgba(243,228,162,0.8)];
+        }
+        [data-theme="newsprint"] .holographic {
+          @apply bg-gradient-to-r from-[rgba(160,92,92,0.7)] via-[rgba(255,247,230,0.9)] to-[rgba(90,70,50,0.75)];
         }
         .holographic-text {
           @apply holographic text-transparent bg-clip-text;

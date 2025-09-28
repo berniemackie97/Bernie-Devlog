@@ -43,6 +43,11 @@
 - Flexbox and CSS grid are used throughout (`Issue.astro`, card pages) with `gap` utilities tuned for mobile vs. desktop.
 - Sticky regions (TOC, sidebars) apply `top-24` offsets to clear the navigation bar on large screens.
 
+## Testing & Quality
+- Unit tests: `pnpm test` (Vitest + happy-dom targeting `/tests/unit`).
+- End-to-end/integration tests: `pnpm test:e2e` (Playwright; run `pnpm run build` first, then `pnpm exec playwright install` once to fetch browsers).
+- Coverage is generated alongside Vitest in `coverage/`.
+
 ## Build & Tooling
 - Install dependencies: `pnpm install`.
 - Validate types/build: `pnpm run build` (runs `astro check` then `astro build`).
