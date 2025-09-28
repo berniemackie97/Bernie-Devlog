@@ -16,12 +16,16 @@ import { THEMES, DEFAULT_THEME } from "../utils/themes";
     aria-expanded="false"
   >
     Theme
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      class="h-3 w-3"
+    >
       <path
         fill-rule="evenodd"
         d="M10 3a1 1 0 01.894.553l1.618 3.277 3.62.526a1 1 0 01.554 1.706l-2.62 2.555.619 3.607a1 1 0 01-1.451 1.054L10 14.347l-3.234 1.698a1 1 0 01-1.45-1.054l.619-3.607-2.62-2.555a1 1 0 01.554-1.706l3.62-.526L9.106 3.553A1 1 0 0110 3z"
-        clip-rule="evenodd"
-      />
+        clip-rule="evenodd"></path>
     </svg>
   </button>
   <div
@@ -29,30 +33,34 @@ import { THEMES, DEFAULT_THEME } from "../utils/themes";
     role="menu"
     data-theme-menu
   >
-    <p class="text-xs uppercase tracking-[0.3em] text-muted mb-3">Select theme</p>
+    <p class="text-xs uppercase tracking-[0.3em] text-muted mb-3">
+      Select theme
+    </p>
     <div class="space-y-2">
-      {THEMES.map((theme: ThemeOption) => (
-        <button
-          type="button"
-          class="w-full rounded-xl border border-transparent px-3 py-2 text-left transition-colors duration-200 hover:border-[color:var(--color-border)]"
-          data-theme-value={theme.id}
-          role="menuitemradio"
-          aria-checked={theme.id === DEFAULT_THEME}
-        >
-          <div class="flex items-center justify-between">
-            <span class="text-sm font-semibold">{theme.label}</span>
-            <span class="flex items-center gap-1">
-              {theme.swatch.map((color) => (
-                <span
-                  class="h-3 w-3 rounded-full border border-base-200"
-                  style={`background:${color}`}
-                ></span>
-              ))}
-            </span>
-          </div>
-          <p class="mt-1 text-xs text-muted">{theme.description}</p>
-        </button>
-      ))}
+      {
+        THEMES.map((theme: ThemeOption) => (
+          <button
+            type="button"
+            class="w-full rounded-xl border border-transparent px-3 py-2 text-left transition-colors duration-200 hover:border-[color:var(--color-border)]"
+            data-theme-value={theme.id}
+            role="menuitemradio"
+            aria-checked={theme.id === DEFAULT_THEME}
+          >
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-semibold">{theme.label}</span>
+              <span class="flex items-center gap-1">
+                {theme.swatch.map((color) => (
+                  <span
+                    class="h-3 w-3 rounded-full border border-base-200"
+                    style={`background:${color}`}
+                  />
+                ))}
+              </span>
+            </div>
+            <p class="mt-1 text-xs text-muted">{theme.description}</p>
+          </button>
+        ))
+      }
     </div>
   </div>
 </div>
@@ -60,48 +68,64 @@ import { THEMES, DEFAULT_THEME } from "../utils/themes";
 <script is:inline>
   (() => {
     if (typeof window === "undefined") return;
-    const picker = document.querySelector('[data-theme-picker]');
+    const picker = document.querySelector("[data-theme-picker]");
     if (!picker) return;
 
-    const optionsAttr = picker.getAttribute('data-theme-options') ?? '[]';
+    const optionsAttr = picker.getAttribute("data-theme-options") ?? "[]";
     let options;
     try {
       options = JSON.parse(optionsAttr);
     } catch (error) {
-      console.error('Unable to parse theme options', error, optionsAttr);
+      console.error("Unable to parse theme options", error, optionsAttr);
       options = [];
     }
     const THEME_OPTIONS = Array.isArray(options) ? options : [];
     const KEY = "berniedev-theme";
-    const toggleBtn = picker.querySelector('button');
-    const menu = picker.querySelector('[data-theme-menu]');
-    const buttons = Array.from(menu?.querySelectorAll('[data-theme-value]') ?? []);
+    const toggleBtn = picker.querySelector("button");
+    const menu = picker.querySelector("[data-theme-menu]");
     const html = document.documentElement;
-    const DEFAULT_THEME = picker.getAttribute('data-default-theme') ?? (THEME_OPTIONS[0]?.id ?? 'country');
+    const DEFAULT_THEME =
+      picker.getAttribute("data-default-theme") ??
+      THEME_OPTIONS[0]?.id ??
+      "country";
 
     const getTheme = (id) => THEME_OPTIONS.find((theme) => theme.id === id);
 
     const applyTheme = (id, { persist = true } = {}) => {
       const theme = getTheme(id) ?? getTheme(DEFAULT_THEME);
       const activeId = theme?.id ?? DEFAULT_THEME;
-      html.setAttribute('data-theme', activeId);
-      if (theme?.isDark) {
-        html.style.colorScheme = 'dark';
+      html.setAttribute("data-theme", activeId);
+
+      // Set font family CSS variables
+      if (theme?.font) {
+        html.style.setProperty("--font-display", theme.font.display);
+        html.style.setProperty("--font-body", theme.font.body);
       } else {
-        html.style.removeProperty('color-scheme');
+        html.style.removeProperty("--font-display");
+        html.style.removeProperty("--font-body");
+      }
+
+      if (theme?.isDark) {
+        html.style.colorScheme = "dark";
+      } else {
+        html.style.removeProperty("color-scheme");
       }
       if (persist) {
         try {
           window.localStorage.setItem(KEY, activeId);
         } catch (err) {
-          console.warn('Unable to persist theme', err);
+          console.warn("Unable to persist theme", err);
         }
       }
+      // Update button states
+      const buttons = Array.from(
+        menu?.querySelectorAll("[data-theme-value]") ?? []
+      );
       buttons.forEach((btn) => {
         const isActive = btn.dataset.themeValue === activeId;
-        btn.classList.toggle('border-[color:var(--color-border)]', isActive);
-        btn.classList.toggle('bg-highlight/40', isActive);
-        btn.setAttribute('aria-checked', String(isActive));
+        btn.classList.toggle("border-[color:var(--color-border)]", isActive);
+        btn.classList.toggle("bg-highlight/40", isActive);
+        btn.setAttribute("aria-checked", String(isActive));
       });
     };
 
@@ -117,41 +141,47 @@ import { THEMES, DEFAULT_THEME } from "../utils/themes";
 
     window.__berniedevApplyTheme = (id) => applyTheme(id, { persist: false });
 
-    document.addEventListener('astro:after-swap', () => {
+    document.addEventListener("astro:after-swap", () => {
       applyTheme(readStoredTheme() ?? DEFAULT_THEME, { persist: false });
     });
 
-    toggleBtn?.addEventListener('click', () => {
+    toggleBtn?.addEventListener("click", () => {
       if (!menu) return;
-      const expanded = toggleBtn.getAttribute('aria-expanded') === 'true';
-      toggleBtn.setAttribute('aria-expanded', String(!expanded));
-      menu.classList.toggle('hidden', expanded);
+      const expanded = toggleBtn.getAttribute("aria-expanded") === "true";
+      toggleBtn.setAttribute("aria-expanded", String(!expanded));
+      menu.classList.toggle("hidden", expanded);
+
+      // Re-query buttons and attach listeners
+      if (!expanded) {
+        const buttons = Array.from(
+          menu.querySelectorAll("[data-theme-value]") ?? []
+        );
+        buttons.forEach((btn) => {
+          btn.onclick = () => {
+            applyTheme(btn.dataset.themeValue ?? DEFAULT_THEME);
+            toggleBtn?.setAttribute("aria-expanded", "false");
+            menu.classList.add("hidden");
+          };
+        });
+      }
     });
 
-    document.addEventListener('click', (event) => {
+    document.addEventListener("click", (event) => {
       if (!menu) return;
       if (!picker.contains(event.target)) {
-        toggleBtn?.setAttribute('aria-expanded', 'false');
-        menu.classList.add('hidden');
+        toggleBtn?.setAttribute("aria-expanded", "false");
+        menu.classList.add("hidden");
       }
     });
 
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        toggleBtn?.setAttribute('aria-expanded', 'false');
-        menu?.classList.add('hidden');
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        toggleBtn?.setAttribute("aria-expanded", "false");
+        menu?.classList.add("hidden");
       }
     });
 
-    buttons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        applyTheme(btn.dataset.themeValue ?? DEFAULT_THEME);
-        toggleBtn?.setAttribute('aria-expanded', 'false');
-        menu?.classList.add('hidden');
-      });
-    });
-
-    window.addEventListener('storage', (event) => {
+    window.addEventListener("storage", (event) => {
       if (event.key === KEY && event.newValue) {
         applyTheme(event.newValue, { persist: false });
       }

@@ -13,6 +13,10 @@
 - `src/components/ThemePicker.astro` renders a palette switcher with localStorage persistence.
 - Themes are declared in `src/utils/themes.ts`; add new palettes (id, label, swatch, optional `isDark`) there.
 - Root `<html>` receives `data-theme`, which tailwind/daisyui listen to. Dark-mode variants rely on the `isDark` flag to set `color-scheme`.
+- Each theme entry must include a `fonts.display` and `fonts.body` declaration so typography swaps with the palette. Tests fail if fonts are missing.
+- New typefaces can be loaded either by extending the Google Fonts `<link>` block or by adding `@font-face` rules in `src/layouts/Layout.astro` (drop assets into `public/fonts`).
+- The Theme Picker dropdown serializes the `THEMES` array for you—additions appear automatically. To override the list or default value for a specific page, pass `themes`/`defaultTheme` props to `<ThemePicker />`.
+- After updating palette entries or fonts, run `pnpm test` to confirm the theme registry and client behavior stay green.
 
 ## Layout Spacing
 - Global padding lives on `Layout.astro` (`px-3 sm:px-6 lg:px-10`). Adjust once to affect every page.
