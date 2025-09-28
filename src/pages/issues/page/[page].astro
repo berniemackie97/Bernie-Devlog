@@ -1,92 +1,184 @@
 ---
-import { getCollection, getEntry } from "astro:content";
+import { getCollection } from "astro:content";
 import Layout from "../../../layouts/Layout.astro";
 import romanize from "../../../utils/romanize";
 
 export async function getStaticPaths({ paginate }: { paginate: any }) {
-  const blogEntries = await getCollection("issues");
+  const issues = await getCollection("issues");
   return paginate(
-    blogEntries.sort((a, b) => a.data.issue_number - b.data.issue_number),
-    { pageSize: 5 },
+    issues.sort((a, b) => b.data.issue_number - a.data.issue_number),
+    { pageSize: 6 },
   );
 }
 
 const { page, title }: { page: any; title: string } = Astro.props;
+const issues = page.data;
 
-const allIssues = page.data;
-const IssueContents = await Promise.all(
-  allIssues.map((issue: any) => issue.render()),
+const cards = await getCollection("cards");
+const cardsByIssue = new Map(
+  cards.map((card) => {
+    const issuePath = card.data.issue_path ?? `/issues/${card.slug}`;
+    const issueSlug = issuePath.replace(/^\/issues\//, "");
+    return [issueSlug, card];
+  }),
 );
 
-const arrayRange = (start: number, stop: number, step: number) =>
-  Array.from(
-    { length: (stop - start) / step + 1 },
-    (value, index) => start + index * step,
-  );
+const coverPalette = [
+  "from-[#FEEBC8]/80 via-transparent to-base-100",
+  "from-[#BFDBFE]/80 via-transparent to-base-100",
+  "from-[#F8D7E3]/80 via-transparent to-base-100",
+  "from-[#BBF7D0]/80 via-transparent to-base-100",
+];
 
-const pageRange = arrayRange(1, page.lastPage, 1);
+const spinePalette = [
+  "bg-[#F97316]",
+  "bg-[#6366F1]",
+  "bg-[#EC4899]",
+  "bg-[#0EA5E9]",
+];
+
+const shadowPalette = [
+  "shadow-[rgba(249,115,22,0.25)_0px_30px_60px_-25px]",
+  "shadow-[rgba(99,102,241,0.25)_0px_30px_60px_-25px]",
+  "shadow-[rgba(236,72,153,0.25)_0px_30px_60px_-25px]",
+  "shadow-[rgba(14,165,233,0.25)_0px_30px_60px_-25px]",
+];
 ---
 
 <Layout title={title} frontmatter={null}>
-  <div class="md:px-10">
-    <div class="flex items-center py-2 justify-between">
-      <h1 class="lg:text-7xl px-2 md:px-0 mb-2">All issues</h1>
-
-      <div class="join">
-        {
-          page.url.prev ? (
-            <a href={page.url.prev} class="join-item btn">
-              «
-            </a>
-          ) : null
-        }
-        <a class="join-item btn">Page {page.currentPage}</a>
-        {
-          page.url.next ? (
-            <a href={page.url.next} class="join-item btn">
-              »
-            </a>
-          ) : null
-        }
+  <section class="px-3 sm:px-6 lg:px-10 pb-16 space-y-12">
+    <header class="flex flex-wrap items-end justify-between gap-6">
+      <div class="max-w-xl space-y-3">
+        <p class="text-xs uppercase tracking-[0.4em] text-base-content/60">Print queue</p>
+        <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-tight">
+          Stacks fresh from the newsroom
+        </h1>
+        <p class="text-sm sm:text-base text-base-content/70">
+          Flip through active issues like a stack of weekend magazines. Every cover links to a full
+          set of articles, lab notes, and release plans.
+        </p>
       </div>
-    </div>
-    <div class="relative pb-10">
-      {
-        allIssues.map((issue: any, index: number) => {
-          const Component = IssueContents[index].Content;
+
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="join">
+          {page.url.prev && (
+            <a
+              href={page.url.prev}
+              class="join-item btn btn-sm sm:btn-md"
+              aria-label="Previous page"
+            >
+              Prev
+            </a>
+          )}
+          <span class="join-item btn btn-sm sm:btn-md">Page {page.currentPage}</span>
+          {page.url.next && (
+            <a
+              href={page.url.next}
+              class="join-item btn btn-sm sm:btn-md"
+              aria-label="Next page"
+            >
+              Next
+            </a>
+          )}
+        </div>
+      </div>
+    </header>
+
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,320px)_1fr]">
+      <aside class="order-2 lg:order-1 space-y-6 border border-base-content/10 bg-base-100/70 backdrop-blur rounded-3xl p-6 lg:sticky lg:top-28">
+        <h2 class="font-display text-2xl">How to read</h2>
+        <ol class="list-decimal pl-4 space-y-2 text-sm text-base-content/70">
+          <li>Pick an issue cover to open the table of contents.</li>
+          <li>Use the roadmap inside each issue to follow the release cadence.</li>
+          <li>Add interesting cards to your backlog with the CTA buttons.</li>
+        </ol>
+        <div class="rounded-2xl border border-dashed border-base-content/20 p-4 text-xs uppercase tracking-[0.3em] text-base-content/50">
+          Fresh ink lands here first. Check back on Mondays for new drops.
+        </div>
+      </aside>
+
+      <div class="order-1 lg:order-2 space-y-10">
+        {issues.map((issue: any, index: number) => {
+          const gradient = coverPalette[index % coverPalette.length];
+          const spine = spinePalette[index % spinePalette.length];
+          const shadow = shadowPalette[index % shadowPalette.length];
+          const rotation = index % 2 === 0 ? "lg:-rotate-1" : "lg:rotate-1";
+          const linkedCard = cardsByIssue.get(issue.slug);
+          const cardHref = linkedCard
+            ? linkedCard.data.card_path ?? `/cards/${linkedCard.slug}`
+            : null;
+
           return (
-            <div class="group border-t z-20 overflow-hidden last:border-b border-l rounded-t-sm shadow-[rgba(0,0,0,0.05)_0px_-2px_4px_0px] border-r">
-              <a
-                class="flex flex-col px-2 md:p-10"
-                href={`/issues/${issue.slug}`}
-              >
-                <div class="flex w-full justify-between items-center lg:text-4xl">
-                  <span class="max-w-2xl">{issue.data.title}</span>{" "}
+            <article
+              class={`group relative isolate overflow-hidden rounded-[28px] border border-base-content/10 bg-base-100/95 px-6 py-8 sm:px-8 sm:py-12 transition-all duration-500 ${shadow} hover:-translate-y-3 hover:shadow-[rgba(15,23,42,0.35)_0px_35px_90px_-25px] ${rotation}`}
+            >
+              <span
+                class={`pointer-events-none absolute inset-[-18px] rounded-[32px] bg-gradient-to-br ${gradient} opacity-70`}
+                aria-hidden="true"
+              ></span>
+              <span
+                class={`pointer-events-none absolute -left-6 top-0 h-full w-4 rounded-sm ${spine}`}
+                aria-hidden="true"
+              ></span>
+              <span
+                class="pointer-events-none absolute right-10 top-10 hidden h-16 w-16 border border-dashed border-base-content/20 md:block"
+                aria-hidden="true"
+              ></span>
+
+              <div class="relative space-y-6">
+                <header class="flex flex-wrap items-start justify-between gap-6">
+                  <div class="space-y-2">
+                    <span class="text-xs font-semibold uppercase tracking-[0.4em] text-base-content/60">
+                      Issue {issue.data.issue_number}
+                    </span>
+                    <h2 class="font-display text-2xl sm:text-3xl lg:text-4xl max-w-xl">
+                      {issue.data.title}
+                    </h2>
+                  </div>
                   <span
                     transition:animate="fade"
                     transition:name={`issue_number_${issue.data.issue_number}`}
-                    class="font-lithops text-8xl"
+                    class="font-lithops text-6xl sm:text-7xl lg:text-8xl text-base-content/80"
                   >
                     {romanize(issue.data.issue_number)}
                   </span>
+                </header>
+
+                <p class="max-w-2xl text-base-content/70">
+                  {issue.data.description}
+                </p>
+
+                <div class="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.3em] text-base-content/50">
+                  <span class="inline-flex items-center gap-2">
+                    <span class="h-2 w-2 rounded-full bg-primary/70"></span>
+                    Active articles
+                  </span>
+                  <span class="inline-flex items-center gap-2">
+                    <span class="h-2 w-2 rounded-full bg-secondary/70"></span>
+                    Progressive release
+                  </span>
+                  <span class="inline-flex items-center gap-2">
+                    <span class="h-2 w-2 rounded-full bg-accent/70"></span>
+                    Roadmap inside
+                  </span>
                 </div>
-              </a>
-              <div
-                transition:name={issue.data.title}
-                class="block z-10 max-h-0 group-last:hidden invisible group-hover:visible group-hover:max-h-[50px] duration-1000 transition-all ease-in-out"
-              >
-                <Component />
+
+                <footer class="flex flex-wrap items-center gap-3">
+                  <a class="btn btn-primary" href={`/issues/${issue.slug}`}>
+                    Open the issue
+                  </a>
+                  {cardHref && (
+                    <a class="btn btn-outline" href={cardHref}>
+                      View the issue card
+                    </a>
+                  )}
+                </footer>
               </div>
-              <div
-                transition:name={issue.data.title}
-                class="z-10 hidden group-last:block pb-16"
-              >
-                <Component />
-              </div>
-            </div>
+            </article>
           );
-        })
-      }
+        })}
+      </div>
     </div>
-  </div>
+  </section>
 </Layout>
+

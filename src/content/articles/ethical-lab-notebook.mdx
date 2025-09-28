@@ -1,0 +1,58 @@
+---
+title: Keep a Red Team Notebook
+description: Capture findings, payloads, and cleanup steps every time you touch the lab.
+layout: ../../layouts/Article.astro
+issue_number: 3
+---
+
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+
+# {frontmatter.title}
+
+<FancyParagraph>
+A notebook is your source of truth during ethical hacking engagements. It preserves context for future
+reviews, keeps leadership informed, and prevents lost indicators. This article shows what to record
+and how to structure it.
+</FancyParagraph>
+
+## Pick a tooling stack
+
+* Plain markdown files in the repo (`docs/labs/`).
+* Encrypted notes with strong search (Obsidian, Notion, or your preferred tool).
+* Screenshots and captures stored alongside notes.
+
+Whatever you choose, make sure exporting to a static archive is easy.
+
+## Template for each lab
+
+```markdown
+# Lab name
+
+## Overview
+Goal, target, and scope.
+
+## Timeline
+List timestamps for key actions.
+
+## Evidence
+Links to captures, logs, and artifacts.
+
+## Cleanup
+What changed, snapshots restored, credentials rotated.
+```
+
+## Capture while you work
+
+Add notes during the lab rather than at the end. Short bullet points beat memory. Include command outputs, tool versions, and any anomalies you notice.
+
+## Share responsibly
+
+When the engagement allows it, share sanitized excerpts with stakeholders. Transparency builds trust and shows the value of the work.
+
+## Archive when complete
+
+1. Export the notebook to PDF or static HTML.
+2. Store it with the rest of the evidence.
+3. Tag it with the project name and date.
+
+Good notes mean you never redo analysis just to remember what happened.

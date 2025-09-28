@@ -2,15 +2,29 @@
 import TOCHeading from "./TOCHeading.astro";
 import buildHierarchy from "../../utils/buildHierarchy";
 
-const { headings } = Astro.props;
+const {
+  headings,
+  title = "On this page",
+  variant = "default",
+} = Astro.props;
 
 const toc = buildHierarchy(headings);
+
+const isMinimal = variant === "minimal";
+const containerClasses = isMinimal
+  ? "article-toc space-y-3"
+  : "article-toc rounded-2xl border border-base-content/15 bg-base-100/60 p-4 shadow-sm backdrop-blur";
+const titleClasses = isMinimal
+  ? "text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60"
+  : "text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60";
+const listClasses = "mt-3 space-y-2 text-sm leading-snug text-base-content/80";
 ---
 
 {
   toc && toc.length > 0 && (
-    <nav class="article-toc">
-      <ul class="menu menu-lg">
+    <nav class={containerClasses} aria-label={title}>
+      <p class={titleClasses}>{title}</p>
+      <ul class={listClasses}>
         {toc.map((heading) => (
           <TOCHeading heading={heading} />
         ))}

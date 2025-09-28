@@ -1,0 +1,53 @@
+---
+title: Run Frontend Incident Drills
+description: Practice the workflows you need when telemetry lights up and customers cannot wait.
+layout: ../../layouts/Article.astro
+issue_number: 5
+---
+
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+
+# {frontmatter.title}
+
+<FancyParagraph>
+Instrumentation only helps when the team knows how to respond. This article sets up a cadence of
+frontend incident drills, complete with runbooks, role assignments, and follow up notes.
+</FancyParagraph>
+
+## Draft the playbook
+
+Each drill starts with a real scenario written in a runbook. Include:
+
+* Triggering metric or alert
+* Who is on point (engineer, communicator, note taker)
+* Expected customer impact
+* Resolution checklist
+
+## Schedule table top drills
+
+Run the first few drills as table top sessions. Gather in a conference room or call, walk through the runbook, and capture the gaps. Keep the tone blameless and focused on learning.
+
+## Move to live fire
+
+Once the team is comfortable, simulate incidents on a staging environment. Example ideas:
+
+* Inject latency into the API responses.
+* Serve outdated assets to a segment of traffic.
+* Revoke a feature flag unexpectedly.
+
+Treat the drill as seriously as production. Capture timelines, customer messaging, and follow ups.
+
+## Closing the loop
+
+After every drill write a short retro:
+
+1. What signal told us something was wrong?
+2. How long until we understood the blast radius?
+3. Where did tooling help or slow us down?
+4. Which action items will prevent the problem next time?
+
+Store the retros next to the runbooks. Future hires learn faster when history is visible.
+
+## Keep improving
+
+Rotate participants so the entire team learns the workflow. Pair the drills with performance budget reviews and telemetry audits. Observability is not a tool set; it is a muscle.

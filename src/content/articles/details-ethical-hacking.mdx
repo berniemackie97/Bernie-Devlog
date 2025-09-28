@@ -1,36 +1,41 @@
 ---
-title: The Clean Room — Ethical Hacking & RE
+title: The Clean Room - Ethical Hacking & RE
 description: Reproducible labs and projects in ethical hacking and reverse engineering.
 layout: ../../layouts/Article.astro
-issue_number: 1
+issue_number: 3
 ---
+
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
 
 # {frontmatter.title}
 
----
+<FancyParagraph>
+The Clean Room is where I document ethical hacking experiments. Every lab runs in an isolated sandbox
+with evidence collection, cleanup steps, and notes you can replay later.
+</FancyParagraph>
 
-**{frontmatter.description}**
+## What this issue covers
 
-## What this issue is
+* Lab architecture with disposable virtual machines
+* Static and dynamic reverse engineering workflows
+* Social engineering drills that respect consent
 
-A focused series on **ethical hacking** and **reverse engineering**. Each article sets a concrete goal, goes through a repeatable lab, and provides everything you need to follow along.
+## Who it helps
 
-## What’s inside
+* Engineers who want to understand offensive techniques safely
+* Security teams building training material with reproducible labs
+* Curiosity driven developers looking for practical reverse engineering exercises
 
-- **Malware analysis and development**
-- **Reverse Engineering fundamentals**
-- **Network investigations & attacks**
-- **Build tools: parsers, unpackers, injectors, and more** 
+## Safety principles
 
-## Who this is for
+1. Work only on assets you own or have written permission to test.
+2. Store payloads and captures in restricted buckets.
+3. Clean snapshots after every lab. Assume nothing is disposable until you prove it.
 
-- Newcomers and curious devs who want **mechanism over mystique**
-- Readers who prefer **step-by-step labs** with proof
+## Suggested starting path
 
-## Ground rules
+1. Build the sandbox and capture your first packet traces.
+2. Tackle a static malware teardown.
+3. Run a small phishing simulation with leadership approval.
 
-- **Consent only.** Targets I own or have explicit permission to test  
-- **Safe scope.** Local VMs, generated samples, controlled inputs  
-- **Show the work.** Artifacts and reasoning you can repeat
-
----
+Each article lists prerequisites, estimated time, and the artifacts you should save. Use the notes as a template for your own reports.

@@ -1,0 +1,80 @@
+---
+title: Instrument the Frontend Without Guesswork
+description: Capture logs, metrics, and traces from the browser in a way that scales past one project.
+layout: ../../layouts/Article.astro
+issue_number: 5
+---
+
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+
+# {frontmatter.title}
+
+<FancyParagraph>
+We need telemetry that helps engineers and support teams answer real questions: What broke, who is
+impacted, and can we replay the problem locally? This article sets up a consistent instrumentation
+layer for browser apps.
+</FancyParagraph>
+
+## Define the signals upfront
+
+Create a telemetry charter before writing code.
+
+* **Logs** explain what happened. Keep them structured and low volume.
+* **Metrics** highlight trends. Aggregate in the browser but ship to your metrics backend.
+* **Traces** connect user actions to backend calls and timed work.
+
+## Build a client wrapper
+
+Centralize telemetry write calls instead of sprinkling vendor code everywhere.
+
+```ts
+// instrumentation/client.ts
+export type Telemetry = {
+  log: (event: string, payload?: Record<string, unknown>) => void;
+  metric: (name: string, value: number, tags?: Record<string, string>) => void;
+  trace: (name: string, fn: () => Promise<void>) => Promise<void>;
+};
+
+export function createTelemetry(vendor: Telemetry): Telemetry {
+  return {
+    log(event, payload = {}) {
+      vendor.log(event, { ...payload, source: "web" });
+    },
+    metric(name, value, tags = {}) {
+      vendor.metric(name, value, { ...tags, source: "web" });
+    },
+    async trace(name, fn) {
+      return vendor.trace(name, fn);
+    },
+  };
+}
+```
+
+With a wrapper you can stub telemetry in tests and switch vendors later.
+
+## Ship context with every event
+
+Wire the wrapper into your app bootstrap.
+
+```ts
+// app/bootstrap.ts
+import { createTelemetry } from "./instrumentation/client";
+import * as vendor from "./instrumentation/vendor";
+
+const telemetry = createTelemetry(vendor);
+
+telemetry.log("app.started", {
+  release: window.__APP_VERSION__,
+  locale: navigator.language,
+});
+```
+
+## Guardrails for developers
+
+* Fail builds when telemetry calls use forbidden keys.
+* Provide a local inspector panel that lists recent events.
+* Document high level event names so designers, QA, and support speak the same language.
+
+## What is next
+
+The next article builds on this foundation with performance budgets and field metrics.

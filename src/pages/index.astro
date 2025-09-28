@@ -4,8 +4,12 @@ import { getEntry } from "astro:content";
 
 const entry = await getEntry("issues", "featured");
 
+if (!entry) {
+  throw new Error("Featured issue content is missing. Add src/content/issues/featured.mdx.");
+}
+
 const issueSlug = `/issues/${entry.slug}`;
-const { Content, headings } = await entry.render();
+const { Content } = await entry.render();
 ---
 
 <Layout issueSlug={issueSlug} title={entry.data.title} frontmatter={entry.data}>

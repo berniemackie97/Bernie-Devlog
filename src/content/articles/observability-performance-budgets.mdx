@@ -1,0 +1,70 @@
+---
+title: Performance Budgets You Can Enforce
+description: Track and fail builds when web vitals drift beyond the numbers you promised.
+layout: ../../layouts/Article.astro
+issue_number: 5
+---
+
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+
+# {frontmatter.title}
+
+<FancyParagraph>
+A budget is only useful if it blocks regressions. We will set field budgets for Core Web Vitals, run
+synthetic checks in CI, and expose a budget dashboard during development.
+</FancyParagraph>
+
+## Define budgets with the team
+
+Pick budgets for Largest Contentful Paint, First Input Delay, and Cumulative Layout Shift.
+
+```json
+{
+  "lcp": 2500,
+  "fid": 100,
+  "cls": 0.1
+}
+```
+
+Store the file in version control. Reviews become explicit conversations when budgets change.
+
+## Collect field data
+
+Use the `web-vitals` package to emit metrics.
+
+```ts
+import { onCLS, onFID, onLCP } from "web-vitals";
+import { telemetry } from "./telemetry";
+
+const thresholds = require("../budgets.json");
+
+function send(metric: { name: string; value: number }) {
+  telemetry.metric(`web.${metric.name.toLowerCase()}`, metric.value, {
+    budget: thresholds[metric.name.toLowerCase()],
+  });
+}
+
+onCLS(send);
+onFID(send);
+onLCP(send);
+```
+
+## Synthetic checks in CI
+
+Run Lighthouse or WebPageTest against the preview build. Fail when the budget is exceeded.
+
+```bash
+npm install -g lighthouse
+lighthouse https://preview.example.com --output=json --output-path=./lhr.json
+node scripts/assert-budgets.js lhr.json budgets.json
+```
+
+Inside `assert-budgets.js` compare the measured values with the budgets and exit with code `1` when they exceed the limit.
+
+## Surface budgets locally
+
+Expose the latest field metrics in a developer HUD. A simple React provider that subscribes to telemetry events is enough. Engineers get immediate feedback after they refresh the page.
+
+## Continuous improvement
+
+Review the dashboard after every release. When the team hits the budget comfortably three releases in a row, tighten it slightly. When the numbers fail often, investigate the regressions before raising the budget.

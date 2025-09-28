@@ -1,7 +1,7 @@
 ---
 import Empty from "../../Empty.astro";
 import normal_components from "./components";
-const { markdown, class: className, href, components, cta } = Astro.props;
+const { markdown, components } = Astro.props;
 const { Content } = await markdown.render();
 ---
 

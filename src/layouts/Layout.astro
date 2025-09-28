@@ -25,7 +25,7 @@ const { title, frontmatter, issueSlug } = Astro.props;
     <Linter expanded />
     <ClientRouter />
   </head>
-  <body class="font-serif pb-16 max-w-screen-2xl mx-auto">
+  <body class="font-serif bg-base-100 min-h-screen pb-16 max-w-screen-2xl mx-auto px-3 sm:px-6 lg:px-10">
     <Navigation issue_slug={issueSlug} issue={frontmatter?.issue_number} />
     <div transition:animate="fade">
       <slot />

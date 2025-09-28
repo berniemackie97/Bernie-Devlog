@@ -8,26 +8,95 @@ layout: "../../layouts/Issue.astro"
 import { getEntry } from "astro:content";
 import ArticleTeaser from "../../components/ArticleTeaser.astro";
 import FancyParagraph from "../../components/Content/FancyParagraph.astro";
-import Empty from "../../components/Empty.astro";
 import TitleLink from "../../components/TitleLink.astro";
 
+export const labSetup = await getEntry("articles", "ethical-sandbox-foundations");
+export const teardown = await getEntry("articles", "ethical-static-malware-teardown");
+export const notebook = await getEntry("articles", "ethical-lab-notebook");
+export const phishing = await getEntry("articles", "ethical-phishing-simulation");
+
 export const components = {
-  h1: props => <h1 class="col-span-12 text-6xl text-left" {...props} />
-}
+  h1: (props) => (
+    <h1 class="col-span-12 text-3xl lg:text-8xl font-display text-center text-balance" {...props} />
+  ),
+};
 
-export const card_intro = await getEntry(
-    "articles",
-    "re-featured-articles",
-);
+# {frontmatter.title}
 
-# {frontmatter.description}
+<p class="col-span-12 xl:col-span-8 mx-auto mt-2 text-center opacity-80">
+  {frontmatter.description}
+</p>
+
+<div class="col-span-12 xl:col-span-8 mx-auto mt-6">
+  <FancyParagraph>
+    This issue keeps offensive security work inside a controlled sandbox. We build the lab, dissect
+    samples, log every action, and run responsible phishing drills.
+  </FancyParagraph>
+</div>
+
+<hr class="col-span-12 my-10 opacity-20" />
 
 <ArticleTeaser
-  components={{ h1: props => <TitleLink slug={card_intro.slug} {...props} />}}
-  markdown={card_intro}
-  href={`/articles/${card_intro.slug}`}
+  components={{ h1: (props) => <TitleLink slug={labSetup.slug} {...props} /> }}
+  markdown={labSetup}
+  href={`/articles/${labSetup.slug}`}
   class="xl:col-span-8 col-span-12"
-  cta="Check out "
-  title={card_intro.data.title}
+  cta="Set up the lab"
 />
 
+<div class="col-span-12 xl:col-span-4 xl:sticky top-24 self-start">
+  <div class="prose prose-lg rounded-2xl border border-base-content/15 bg-base-100/80 p-5">
+    <h3 class="mt-0">Lab checklist</h3>
+    <ul class="list-disc pl-4 space-y-1">
+      <li>Snapshots before every lab</li>
+      <li>Packet captures for each run</li>
+      <li>Evidence stored with access control</li>
+    </ul>
+    <a href="/cards/ethical-hacking" class="btn btn-primary btn-block mt-4">
+      View the issue card
+    </a>
+  </div>
+</div>
+
+<hr class="col-span-12 my-10 opacity-20" />
+
+<h2 class="col-span-12 font-display text-3xl md:text-4xl">Articles in this issue</h2>
+
+<ArticleTeaser
+  components={{ h1: (props) => <TitleLink slug={teardown.slug} {...props} /> }}
+  markdown={teardown}
+  href={`/articles/${teardown.slug}`}
+  class="xl:col-span-8 col-span-12"
+  cta="Perform a static teardown"
+/>
+
+<ArticleTeaser
+  components={{ h1: (props) => <TitleLink slug={notebook.slug} {...props} /> }}
+  markdown={notebook}
+  href={`/articles/${notebook.slug}`}
+  class="xl:col-span-8 col-span-12"
+  cta="Document the lab"
+/>
+
+<ArticleTeaser
+  components={{ h1: (props) => <TitleLink slug={phishing.slug} {...props} /> }}
+  markdown={phishing}
+  href={`/articles/${phishing.slug}`}
+  class="xl:col-span-8 col-span-12"
+  cta="Run a phishing simulation"
+/>
+
+<hr class="col-span-12 my-10 opacity-20" />
+
+<h2 class="col-span-12 font-display text-3xl md:text-4xl">Operating rules</h2>
+
+<div class="col-span-12 xl:col-span-8">
+  <ul class="list-disc pl-4 space-y-1">
+    <li>Practice only on assets you own or have permission to test.</li>
+    <li>Document every command and indicator. Future you will thank present you.</li>
+    <li>After-action reviews are mandatory and focus on process, not blame.</li>
+  </ul>
+  <p class="mt-4 text-sm opacity-70">
+    The lab is a rehearsal space. Keep the boundaries clear and the evidence tidy, and you can explore without fear.
+  </p>
+</div>

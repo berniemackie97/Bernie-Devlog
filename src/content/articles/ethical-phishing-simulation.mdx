@@ -1,0 +1,47 @@
+---
+title: Run a Phishing Simulation Responsibly
+description: Craft a controlled phishing exercise and measure the response without breaking trust.
+layout: ../../layouts/Article.astro
+issue_number: 3
+---
+
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+
+# {frontmatter.title}
+
+<FancyParagraph>
+Phishing drills teach employees how to spot suspicious messages. Done badly they hurt trust. This
+article shows how to design a drill that is transparent, consent driven, and measurable.
+</FancyParagraph>
+
+## Align with stakeholders
+
+* Get approval from security leadership, HR, and legal.
+* Share the goals: awareness, response practice, or tooling validation.
+* Announce the exercise window without giving away exact timing.
+
+## Build the campaign
+
+1. Create realistic but harmless lures (invoices, support requests).
+2. Host landing pages on a controlled subdomain.
+3. Record metadata only (timestamps, client, department). No personal content.
+
+## Run and monitor
+
+Use tooling such as GoPhish or a vendor service. During the exercise:
+
+* Respond quickly when someone reports the phishing message.
+* Provide positive reinforcement instead of blame.
+* Capture metrics: open rate, click rate, credential submissions, and report rate.
+
+## Share the results
+
+Publish a post exercise summary with:
+
+* Aggregate metrics
+* What worked (teams that reported quickly)
+* Improvements planned (training modules, email banners)
+
+## Reinforce learning
+
+Follow the drill with a voluntary workshop. Walk through real examples, show how the telemetry helped, and update the incident response checklist with lessons learned.

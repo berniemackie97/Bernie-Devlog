@@ -10,8 +10,6 @@ import HoloCard from "../../components/Cards/HoloFullArtCard/Card.astro";
 import TipCard from "../../components/Cards/TipCard/Card.astro";
 import Empty from "../../components/Empty.astro";
 
-import { paths, isOnPath } from "../../utils/paths";
-
 export async function getStaticPaths() {
   const blogEntries = await getCollection("cards");
   return blogEntries.map((entry) => ({
@@ -21,15 +19,9 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content, headings } = await entry.render();
+const { Content } = await entry.render();
 const issue = entry;
 const CardToDisplay = entry.data.type === "tip" ? TipCard : Card;
-
-// Resolve the canonical card path for this entry (frontmatter wins; else helper; else fallback)
-const cardPath = entry.data.card_path ?? (paths.cards as any)[entry.slug] ?? `/cards/${entry.slug}`;
-
-// If you ever need the boolean in the template:
-const onThisCardPage = isOnPath(Astro.url.pathname, cardPath);
 ---
 
 <!-- Hide the CTA button only on the card page itself -->
@@ -45,15 +37,14 @@ const onThisCardPage = isOnPath(Astro.url.pathname, cardPath);
   title={entry.data.title}
   frontmatter={entry.data}
 >
-  <!-- The wrapper class marks that we're on the card page -->
   <div class="is-card-page">
-    <div class="grid items-start grid-cols-12 break-words hyphens-auto">
+    <div class="grid items-start grid-cols-12 gap-y-8 lg:gap-x-8 break-words hyphens-auto">
       <div class="px-2 col-span-12 xl:col-span-4 mx-auto stack w-full">
         <CardToDisplay markdown={entry} />
         {entry.data.type === "blog" && <HoloCard markdown={entry} />}
       </div>
 
-      <div class="prose col-span-12 mt-10 lg:mt-0 p-2 lg:col-span-7 sticky top-10 h-fit">
+      <div class="prose col-span-12 mt-8 lg:mt-0 px-2 lg:px-6 lg:col-span-7 lg:sticky lg:top-24 h-fit">
         <Content
           components={{ ...components, Card: Empty, More: More, Button: More }}
         />

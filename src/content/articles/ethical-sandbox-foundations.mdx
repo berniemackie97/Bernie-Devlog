@@ -1,0 +1,43 @@
+---
+title: Build a Safe Lab for Ethical Hacking
+description: Assemble disposable targets and controlled tooling before you run your first exploit.
+layout: ../../layouts/Article.astro
+issue_number: 3
+---
+
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+
+# {frontmatter.title}
+
+<FancyParagraph>
+Everything in this issue happens inside an isolated sandbox. We will set up the network, logging,
+and guardrails so you can experiment without touching production systems.
+</FancyParagraph>
+
+## Lab hardware and software
+
+* Two virtual machines with snapshots enabled
+* A dedicated subnet with no route to production
+* Packet capture tooling (tcpdump, Wireshark)
+* A vulnerable application for practice, such as OWASP Juice Shop
+
+Document the versions and store a base snapshot after installing the tooling.
+
+## Networking rules
+
+1. Block internet access by default.
+2. Allow outbound traffic only when a lab specifically requires it.
+3. Capture every packet with `tcpdump -i eth0 -w lab.pcap`.
+4. Store captures in a read only bucket so you can review them later.
+
+## Logging and evidence
+
+Set up centralized logging even in the lab. Use the stack you already know (Elastic, Loki, or plain text shipped with Fluent Bit). The point is to practice triage with real evidence.
+
+## Clean up after each lab
+
+* Revert to the base snapshot.
+* Archive payloads and captures with notes.
+* Rotate passwords used during the exercise.
+
+The lab should feel safe and repeatable. Once this foundation is in place the rest of the issue focuses on specific techniques.

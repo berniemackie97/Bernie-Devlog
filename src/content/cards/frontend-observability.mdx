@@ -1,0 +1,65 @@
+---
+name: Frontend Observability
+title: Frontend Observability Card
+tagline: Know how the UI behaves in production and during drills.
+art: https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop
+mark: Lab
+featured: true
+priority: 70
+card_path: /cards/frontend-observability
+issue_path: /issues/frontend-observability
+---
+
+import { getEntry } from "astro:content";
+import MarkdownSnippet from "../../components/ArticleTeaser.astro";
+import { paths } from "../../utils/paths";
+
+export const CARD_PATH = frontmatter.card_path ?? paths.cards.frontendObservability;
+export const ISSUE_PATH = frontmatter.issue_path ?? paths.issues.frontendObservability;
+
+export const details = await getEntry("articles", "observability-telemetry-basics");
+
+<Card>
+  <ArtSection>
+    <Top>
+      <Name>{frontmatter.name}</Name>
+      <Tagline>{frontmatter.tagline}</Tagline>
+      <Mark>{frontmatter.mark}</Mark>
+    </Top>
+
+    <Art src={frontmatter.art} />
+
+    <Box>
+      <p>Signals we capture</p>
+      <BoxList>
+        * Structured browser logs
+        * Core Web Vitals budgets
+        * Synthetic Lighthouse runs
+        * Incident drill retros
+        * Alerts routed by owner
+      </BoxList>
+    </Box>
+  </ArtSection>
+
+  <Body>
+    Ship with confidence by pairing field telemetry, synthetic checks, and regular drills. The issue walks through the full workflow.
+  </Body>
+
+  <Tip>Instrumentation lives in its own module so you can swap vendors without rewriting the app.</Tip>
+
+  <Button class="card-cta" href={CARD_PATH} aria-label="Read more about Frontend Observability">
+    Read More
+  </Button>
+</Card>
+
+<More>
+  ## Why it matters
+
+  We cannot fix what we cannot see. Observability gives the team shared truth during incidents and a way to prove improvements.
+
+  ## Articles
+
+  <div class="border p-4">
+    <MarkdownSnippet markdown={details} href={ISSUE_PATH} cta="Open the issue" />
+  </div>
+</More>

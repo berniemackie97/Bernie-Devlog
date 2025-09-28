@@ -1,0 +1,75 @@
+---
+title: Automation Playbook Field Guide
+description: How to pick automation targets that pay off and keep the scripts maintainable.
+layout: ../../layouts/Article.astro
+issue_number: 4
+---
+
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+
+# {frontmatter.title}
+
+<FancyParagraph>
+Automation helps when it removes toil without adding mystery. This guide walks through the
+questions I ask before writing a script, how I stage it from local helper to shared job, and the
+checks I expect before anyone depends on it.
+</FancyParagraph>
+
+## Choose the work worth automating
+
+* Look for tasks you repeat at least three times a week.
+* Favor work with clear inputs and outputs. If you cannot write the success check, the script will fail silently.
+* Start with the version that helps you. Adoption from teammates is a bonus, not the goal.
+
+## Capture the manual path first
+
+Write down the exact manual steps before touching a keyboard. For shell tasks I drop a short
+checklist into `docs/runbooks/`.
+
+```text
+# release-hotfix.md
+1. Pull the hotfix branch.
+2. Run the regression suite.
+3. Tag the release candidate.
+4. Announce in #deployments.
+```
+
+If the checklist feels clumsy, the automation will inherit the same confusion.
+
+## Script locally with instant feedback
+
+Create a tiny CLI rather than a pile of copy pasted commands.
+
+```bash
+# tools/release.sh
+set -euo pipefail
+
+tag=${1:?"tag required"}
+branch=${2:-main}
+
+git fetch origin "$branch"
+git checkout "$branch"
+npm test
+npm run build
+./scripts/create-tag "$tag"
+```
+
+Run it until the output is boring. Boring is good.
+
+## Promote to shared automation in stages
+
+1. **Personal helper:** lives in `tools/` and only you call it.
+2. **Team helper:** add docs, ask for a review, and run it during a pairing session.
+3. **Scheduled job:** once it survives a few manual runs, wire it into CI with guardrails.
+
+Each stage adds observability. Log inputs, emit a short summary, and fail loudly.
+
+## Keep the maintenance loop tight
+
+* Pin tool versions and check them into the repo. Implicit dependencies break at 2 AM.
+* Add smoke tests. Mine run the script in `--dry-run` mode to confirm options parse and external services respond.
+* Schedule a quarterly audit. Delete automation nobody uses.
+
+## Next steps
+
+The rest of the issue walks through concrete builds: a filesystem watcher that keeps design tokens in sync, a pull request triage bot, and a deployment pipeline with preflight checks. Start with the watcher article if you want a quick win.

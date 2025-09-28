@@ -1,0 +1,116 @@
+---
+title: Frontend Observability Lab
+description: Measure, alert, and rehearse so the browser never surprises you.
+issue_number: 5
+layout: "../../layouts/Issue.astro"
+---
+
+import { getEntry } from "astro:content";
+import ArticleTeaser from "../../components/ArticleTeaser.astro";
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+import TitleLink from "../../components/TitleLink.astro";
+
+export const telemetry = await getEntry("articles", "observability-telemetry-basics");
+export const budgets = await getEntry("articles", "observability-performance-budgets");
+export const drills = await getEntry("articles", "observability-incident-drills");
+
+export const components = {
+  h1: (props) => (
+    <h1 class="col-span-12 text-3xl lg:text-8xl font-display text-center text-balance" {...props} />
+  ),
+};
+
+# {frontmatter.title}
+
+<p class="col-span-12 xl:col-span-8 mx-auto mt-2 text-center opacity-80">
+  {frontmatter.description}
+</p>
+
+<div class="col-span-12 xl:col-span-8 mx-auto mt-6">
+  <FancyParagraph>
+    We design the telemetry story for browser apps: what to instrument, how to keep budgets honest,
+    and how to respond when dashboards light up. No more guessing or refreshing dashboards without a plan.
+  </FancyParagraph>
+</div>
+
+<hr class="col-span-12 my-10 opacity-20" />
+
+<ArticleTeaser
+  components={{ h1: (props) => <TitleLink slug={telemetry.slug} {...props} /> }}
+  markdown={telemetry}
+  href={`/articles/${telemetry.slug}`}
+  class="xl:col-span-8 col-span-12"
+  cta="Start instrumenting"
+/>
+
+<div class="col-span-12 xl:col-span-4 xl:sticky top-24 self-start">
+  <div class="prose prose-lg rounded-2xl border border-base-content/15 bg-base-100/80 p-5">
+    <h3 class="mt-0">Toolkit</h3>
+    <ul class="list-disc pl-4 space-y-1">
+      <li>Telemetry charter template</li>
+      <li>Budget JSON with documentation</li>
+      <li>Incident retro form</li>
+    </ul>
+    <a href="/cards/frontend-observability" class="btn btn-primary btn-block mt-4">
+      View the observability card
+    </a>
+  </div>
+</div>
+
+<hr class="col-span-12 my-10 opacity-20" />
+
+<h2 class="col-span-12 font-display text-3xl md:text-4xl">Articles in this issue</h2>
+
+<ArticleTeaser
+  components={{ h1: (props) => <TitleLink slug={budgets.slug} {...props} /> }}
+  markdown={budgets}
+  href={`/articles/${budgets.slug}`}
+  class="xl:col-span-8 col-span-12"
+  cta="Enforce performance budgets"
+/>
+
+<ArticleTeaser
+  components={{ h1: (props) => <TitleLink slug={drills.slug} {...props} /> }}
+  markdown={drills}
+  href={`/articles/${drills.slug}`}
+  class="xl:col-span-8 col-span-12"
+  cta="Run the incident drill"
+/>
+
+<hr class="col-span-12 my-10 opacity-20" />
+
+<h2 class="col-span-12 font-display text-3xl md:text-4xl">Signals we watch</h2>
+
+<div class="col-span-12 xl:col-span-8">
+  <div class="rounded-2xl border border-base-content/15 bg-base-100/80 p-5">
+    <ul class="grid gap-3 sm:grid-cols-2">
+      <li>
+        <span class="block text-sm font-semibold uppercase tracking-[0.2em] text-base-content/70">
+          Field
+        </span>
+        Histogram of real user vitals per release.
+      </li>
+      <li>
+        <span class="block text-sm font-semibold uppercase tracking-[0.2em] text-base-content/70">
+          Synthetic
+        </span>
+        Nightly Lighthouse runs against the staging environment.
+      </li>
+      <li>
+        <span class="block text-sm font-semibold uppercase tracking-[0.2em] text-base-content/70">
+          Errors
+        </span>
+        Structured logs grouped by feature flag and customer segment.
+      </li>
+      <li>
+        <span class="block text-sm font-semibold uppercase tracking-[0.2em] text-base-content/70">
+          Incidents
+        </span>
+        Shared timeline with roles and follow up tasks.
+      </li>
+    </ul>
+  </div>
+  <p class="mt-4 text-sm opacity-70">
+    Each new feature lands with instrumentation tasks on the definition of done. The telemetry charter keeps our vocabulary consistent.
+  </p>
+</div>

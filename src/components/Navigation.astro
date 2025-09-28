@@ -1,79 +1,58 @@
 ---
 const { issue, issue_slug } = Astro.props;
-import Mushroom from "./Icons/Mushroom.astro";
-import Bug from "./Icons/Bug.astro";
 import romanize from "../utils/romanize";
 
-const options = { weekday: "long" };
-const optionsMonth = { month: "long" };
-
-const today = new Date();
-const dayNum = today.getDay();
-
-const monthNum = today.getMonth();
-const date = today.getDate();
-const year = today.getFullYear();
-// @ts-ignore
-const day = new Intl.DateTimeFormat("en-US", options).format(today);
-// @ts-ignore
-const month = new Intl.DateTimeFormat("en-US", optionsMonth).format(today);
+const formattedDate = new Intl.DateTimeFormat("en-US", {
+  weekday: "long",
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+}).format(new Date());
 ---
 
-<nav class="p-2 md:px-10 w-full">
-  <div class="flex justify-between">
-    <a class="max-w-[50%]" href="/">
-      <h1 class="text-2xl md:text-7xl font-display">
-        <span>Bernie.Dev</span>
+<nav class="w-full px-3 sm:px-6 lg:px-10 py-4">
+  <div class="flex flex-wrap items-end justify-between gap-4 sm:gap-6">
+    <a class="flex-1 min-w-[220px] sm:min-w-[260px] max-w-full" href="/">
+      <h1 class="font-display text-3xl sm:text-4xl lg:text-7xl leading-none">
+        Bernie.Dev
       </h1>
-      <p
-        class="text-xs font-extrabold text-transparent bg-clip-text bg-gradient-to-t from-primary via-base-content to-base-content"
-      >
-      My obscure Devlog
-        >
+      <p class="mt-1 text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-transparent bg-clip-text bg-gradient-to-r from-primary via-base-content to-base-content">
+        My obscure devlog
       </p>
     </a>
-    {
-      (
-        <div>
-          <a
-            href={issue_slug}
-            class:list={[
-              "flex items-end gap-2 text-transparent bg-clip-text bg-gradient-to-t via-base-content to-base-content",
-              issue_slug ? "from-primary" : "from-accent",
-            ]}
-          >
-            <span class="mb-1">issue no.</span>
-            <span
-              transition:name={`issue_number_${issue}`}
-              transition:animate="fade"
-              class:list={[
-                "font-lithops -mt-4 leading-none text-transparent bg-clip-text bg-gradient-to-t from-primary to-base-content text-8xl",
-                issue_slug ? "from-primary" : "from-accent",
-              ]}
-            >
-              {issue ? romanize(issue) : "!?"}
-            </span>
-          </a>
-        </div>
-      )
-    }
-  </div>
-  <div class="relative flex items-center justify-between w-full mb-4 md:mb-16">
-    <div class="absolute inset-0 flex items-center" aria-hidden="true">
-      <div class="w-full border-t border-base-content"></div>
-    </div>
-    <div class="relative flex justify-start">
-      <span class="bg-base-100 pr-3 text-base font-semibold leading-6">
-        {day}—{month}, {date}, {year}
-      </span>
-    </div>
-    <div class="relative flex">
+
+    <div class="flex basis-full justify-between sm:basis-auto sm:justify-end">
       <a
-        href="/issues/page/1"
-        class="bg-base-100 text-primary pl-3 text-base font-semibold leading-6"
+        href={issue_slug ?? "/issues/page/1"}
+        class:list={[
+          "inline-flex items-baseline gap-3 rounded-lg px-3 py-2 sm:px-4 sm:py-3 transition-colors duration-200",
+          issue ? "bg-base-100/40 hover:bg-base-100/60" : "bg-base-100/20",
+        ]}
+        aria-label={issue ? `Open issue ${romanize(issue)}` : "Browse issues"}
       >
-        All Issues
+        <span class="text-[0.7rem] font-semibold uppercase tracking-[0.4em] text-base-content/60">
+          Issue
+        </span>
+        <span
+          transition:name={`issue_number_${issue ?? "unknown"}`}
+          transition:animate="fade"
+          class="bg-gradient-to-br from-primary via-base-content to-base-content text-transparent bg-clip-text font-lithops leading-none text-5xl sm:text-6xl lg:text-8xl"
+        >
+          {issue ? romanize(issue) : "TBD"}
+        </span>
       </a>
     </div>
+  </div>
+
+  <div class="mt-6 flex flex-wrap items-center justify-between gap-2 border-t border-base-content/20 pt-3 sm:pt-4">
+    <span class="text-sm font-semibold text-base-content">
+      {formattedDate}
+    </span>
+    <a
+      href="/issues/page/1"
+      class="btn btn-sm sm:btn-md btn-outline btn-primary"
+    >
+      All Issues
+    </a>
   </div>
 </nav>

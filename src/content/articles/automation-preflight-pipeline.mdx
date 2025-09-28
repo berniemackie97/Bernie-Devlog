@@ -1,0 +1,72 @@
+---
+title: Preflight Pipelines That Catch Breakage Early
+description: Add fast health checks to your deployment pipeline before the heavyweight stages run.
+layout: ../../layouts/Article.astro
+issue_number: 4
+---
+
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+
+# {frontmatter.title}
+
+<FancyParagraph>
+We keep deployments predictable by running a dedicated preflight pipeline. It is quick, cheap, and
+blocks the rest of the deployment when fundamentals break.
+</FancyParagraph>
+
+## Identify the critical signals
+
+Pick the checks that fail fast and give actionable output.
+
+* Dependency install
+* Linting and formatting
+* Unit tests with the fastest runner configuration
+* Smoke API or UI scenario against a disposable environment
+
+Document the checks in your runbook so nobody ships blind.
+
+## Compose the pipeline
+
+Below is a trimmed GitHub Actions flow. Adapt the idea to your provider; the strategy stays the same.
+
+```yaml
+name: preflight
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  prep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test -- --runInBand --watch=false
+      - name: API smoke test
+        run: npm run smoke -- --endpoint=$API_URL
+```
+
+Keep the job under ten minutes. Anything longer belongs in a different stage.
+
+## Fail loud and surface links
+
+Every command should provide context on failure. For example, the smoke test can dump the first failing request and response into the log. Attach artifact uploads when the output is too long for the console.
+
+## Gate deployments with status checks
+
+Tie the preflight job to your default branch protection. Nobody can merge unless the status is green. When deployment happens automatically from the main branch, the pipeline is already green before production steps run.
+
+## Extend gradually
+
+Once the basics are stable, add optional checks:
+
+* Static analysis for the language you use.
+* Storybook builds or visual regression snapshots.
+* Security scanning for dependencies.
+
+Measure how often each check saves you. Remove the ones that never fail.

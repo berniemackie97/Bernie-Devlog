@@ -1,0 +1,37 @@
+---
+name: Technonomicon
+tagline: A manifesto for this virtual magazine.
+art: https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=2070&auto=format&fit=crop
+mark: Editorial
+featured: false
+card_path: /cards/technonomicon
+issue_path: /issues/featured
+---
+
+import MarkdownSnippet from "../../components/ArticleTeaser.astro";
+import { getEntry } from "astro:content";
+
+export const featuredIssue = await getEntry("issues", "featured");
+
+<Card>
+  <Top>
+    <Name>{frontmatter.name}</Name>
+    <Tagline>{frontmatter.tagline}</Tagline>
+    <Mark>{frontmatter.mark}</Mark>
+  </Top>
+
+  <Body>
+    A quick primer on what this publication covers, how issues ship, and why the format feels like a
+    retro magazine pulled from the newsstand.
+  </Body>
+
+  <Tip>Best enjoyed with a fresh cup of coffee and a stack of open tabs.</Tip>
+
+  <Button class="card-cta" href={frontmatter.card_path}>
+    Read the editorial
+  </Button>
+</Card>
+
+<More>
+  <MarkdownSnippet markdown={featuredIssue} href={`/issues/${featuredIssue.slug}`} cta="Browse the featured issue" />
+</More>

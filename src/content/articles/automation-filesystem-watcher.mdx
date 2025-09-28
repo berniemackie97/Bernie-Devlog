@@ -1,0 +1,113 @@
+---
+title: Build a Filesystem Watcher That Actually Helps
+description: Keep design tokens in sync by compiling on change and failing fast when the output drifts.
+layout: ../../layouts/Article.astro
+issue_number: 4
+---
+
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+
+# {frontmatter.title}
+
+<FancyParagraph>
+We will write a small Node watcher that rebuilds tokens whenever design files change. The watcher
+runs locally, emits clear status lines, and plugs into CI so drift is caught before merge.
+</FancyParagraph>
+
+## Project setup
+
+Create a dedicated package for tooling. Keeping automation separate from app code avoids messy dependency graphs.
+
+```bash
+mkdir -p tools/token-watcher
+cd tools/token-watcher
+npm init -y
+npm install chokidar colorette execa
+```
+
+## Compile the tokens
+
+A helper turns the source JSON into platform specific outputs. The function throws when the output looks suspicious, which gives CI a hard fail instead of a silent mismatch.
+
+```ts
+// tools/token-watcher/src/build.ts
+import { promises as fs } from "fs";
+import path from "path";
+
+export async function buildTokens(source: string, outDir: string) {
+  const raw = JSON.parse(await fs.readFile(source, "utf8"));
+  if (!raw.colors) {
+    throw new Error("tokens file missing colors block");
+  }
+
+  const css = Object.entries(raw.colors)
+    .map(([name, value]) => `--color-${name}: ${value};`)
+    .join("\n");
+
+  await fs.mkdir(outDir, { recursive: true });
+  await fs.writeFile(path.join(outDir, "tokens.css"), `:root {\n${css}\n}`);
+}
+```
+
+## Wire the watcher
+
+Use `chokidar` for stable cross platform watching and `colorette` for readable output.
+
+```ts
+// tools/token-watcher/src/index.ts
+import chokidar from "chokidar";
+import { buildTokens } from "./build";
+import { bold, green, red, yellow } from "colorette";
+
+const source = "../../design/tokens.json";
+const destination = "../../src/styles/generated";
+
+async function compile() {
+  const start = Date.now();
+  try {
+    await buildTokens(source, destination);
+    console.log(green(`OK tokens built in ${Date.now() - start}ms`));
+  } catch (error) {
+    console.error(red(`FAIL token build failed: ${(error as Error).message}`));
+    process.exitCode = 1;
+  }
+}
+
+(async () => {
+  console.log(bold("Watching tokens..."));
+  await compile();
+  chokidar.watch(source).on("all", async () => {
+    console.log(yellow("change detected"));
+    await compile();
+  });
+})();
+```
+
+Run it locally:
+
+```bash
+npm run ts-node src/index.ts
+```
+
+The command prints a success message on every change. Errors exit with a non zero code, which means the same script doubles as a CI guard.
+
+## Add a CI gate
+
+In your pipeline configuration add a dedicated job. It runs the watcher in one shot and caches the compiled directory so the next steps reuse it.
+
+```yaml
+jobs:
+  tokens:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - name: Verify design tokens
+        run: node tools/token-watcher/dist/index.js --once
+```
+
+Keep the job fast and noisy. Engineers should know within seconds whether their branch introduced stale tokens.
+
+## Wrap up
+
+This pattern repeats across automation work: isolate the logic, provide a single entry point, and give both humans and CI the same tool. The next article builds on this watcher to orchestrate full preflight builds.

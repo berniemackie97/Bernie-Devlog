@@ -1,67 +1,57 @@
 ---
 name: The Clean Room
-tagline: Ethical Hacking & Reverse Engineering
-art: https://images.unsplash.com/photo-1618060932014-4deda4932554?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+tagline: Ethical hacking and reverse engineering labs.
+art: https://images.unsplash.com/photo-1618060932014-4deda4932554?q=80&w=1740&auto=format&fit=crop
 mark: Lab
-type: holo            # "holo" to render with CardHolo; use "tip" or omit for normal Card
-featured: false        # <-- makes it appear in Featured Issues
-priority: 99          # <-- optional: higher shows earlier (if you sort by priority)
+type: holo
+featured: true
+priority: 90
+card_path: /cards/ethical-hacking
+issue_path: /issues/ethical-hacking
 ---
 
 import { getEntry } from "astro:content";
-
 import MarkdownSnippet from "../../components/ArticleTeaser.astro";
-export const detailsMD = await getEntry(
-  "articles",
-  "details-ethical-hacking",
-);
+import { paths } from "../../utils/paths";
+
+export const CARD_PATH = frontmatter.card_path ?? paths.cards.ethicalHacking;
+export const ISSUE_PATH = frontmatter.issue_path ?? paths.issues.ethicalHacking;
+export const detailsMD = await getEntry("articles", "details-ethical-hacking");
 
 <Card>
   <ArtSection>
     <Top>
-      <Name>
-        {frontmatter.name}
-      </Name>
-
-      <Tagline>
-        {frontmatter.tagline}
-      </Tagline>
-
-      <Mark>
-        {frontmatter.mark}
-      </Mark>
+      <Name>{frontmatter.name}</Name>
+      <Tagline>{frontmatter.tagline}</Tagline>
+      <Mark>{frontmatter.mark}</Mark>
     </Top>
-    <Box>
-    <p>Ethical Hacking</p>
-      <BoxList>
-        * Malware
-        * Network Traffic
-        * Reverse Engineering
-      </BoxList>
-    </Box>
 
     <Art src={frontmatter.art} />
 
+    <Box>
+      <p>Focus areas</p>
+      <BoxList>
+        * Sandbox design
+        * Malware teardown
+        * Phishing drills
+        * Evidence handling
+      </BoxList>
+    </Box>
   </ArtSection>
 
   <Body>
-    Hands-on **ethical hacking** and **reverse engineering**. Tools, methods, and small projects in a safe lab.
+    A disciplined lab for offensive techniques. Build, test, document, and clean up every engagement.
   </Body>
 
+  <Tip>All exercises run on systems you own or have permission to use.</Tip>
 
-  <Tip>
-    Lab-only. Don’t touch systems you don’t own.
-  </Tip>
-
-  <Button href="/cards/ethical-hacking">Read More</Button>
+  <Button class="card-cta" href={CARD_PATH} aria-label="Read more about The Clean Room">
+    Read More
+  </Button>
 </Card>
 
 <More>
   <div class="border p-6">
-    <MarkdownSnippet
-      markdown={detailsMD}
-      href={`/issues/ethical-hacking`}
-      cta="Read More"
-    />
+    <MarkdownSnippet markdown={detailsMD} href={ISSUE_PATH} cta="Read the issue overview" />
   </div>
 </More>

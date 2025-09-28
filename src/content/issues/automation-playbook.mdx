@@ -1,0 +1,93 @@
+---
+title: Automation Playbook
+description: Ship durable developer automation from scripts to pipelines.
+issue_number: 4
+layout: "../../layouts/Issue.astro"
+---
+
+import { getEntry } from "astro:content";
+import ArticleTeaser from "../../components/ArticleTeaser.astro";
+import FancyParagraph from "../../components/Content/FancyParagraph.astro";
+import TitleLink from "../../components/TitleLink.astro";
+
+export const fieldGuide = await getEntry("articles", "automation-playbook-field-guide");
+export const watcher = await getEntry("articles", "automation-filesystem-watcher");
+export const preflight = await getEntry("articles", "automation-preflight-pipeline");
+
+export const components = {
+  h1: (props) => (
+    <h1 class="col-span-12 text-3xl lg:text-8xl font-display text-center text-balance" {...props} />
+  ),
+};
+
+# {frontmatter.title}
+
+<p class="col-span-12 xl:col-span-8 mx-auto mt-2 text-center opacity-80">
+  {frontmatter.description}
+</p>
+
+<div class="col-span-12 xl:col-span-8 mx-auto mt-6">
+  <FancyParagraph>
+    This issue is about boring, reliable automation. We start by picking the right problems, move to
+    watchers that keep assets in sync, and finish with preflight pipelines that guard every deploy.
+  </FancyParagraph>
+</div>
+
+<hr class="col-span-12 my-10 opacity-20" />
+
+<ArticleTeaser
+  components={{ h1: (props) => <TitleLink slug={fieldGuide.slug} {...props} /> }}
+  markdown={fieldGuide}
+  href={`/articles/${fieldGuide.slug}`}
+  class="xl:col-span-8 col-span-12"
+  cta="Read the playbook"
+/>
+
+<div class="col-span-12 xl:col-span-4 xl:sticky top-24 self-start">
+  <div class="prose prose-lg rounded-2xl border border-base-content/15 bg-base-100/80 p-5">
+    <h3 class="mt-0">Toolchain checklist</h3>
+    <ul class="list-disc pl-4 space-y-1">
+      <li>Dedicated tooling workspace (`/tools`)</li>
+      <li>Docs in `docs/runbooks/` per automation</li>
+      <li>CI job that mirrors local usage</li>
+    </ul>
+    <a href="/cards/automation-playbook" class="btn btn-primary btn-block mt-4">
+      View the automation card
+    </a>
+  </div>
+</div>
+
+<hr class="col-span-12 my-10 opacity-20" />
+
+<h2 class="col-span-12 font-display text-3xl md:text-4xl">Articles in this issue</h2>
+
+<ArticleTeaser
+  components={{ h1: (props) => <TitleLink slug={watcher.slug} {...props} /> }}
+  markdown={watcher}
+  href={`/articles/${watcher.slug}`}
+  class="xl:col-span-8 col-span-12"
+  cta="Build the watcher"
+/>
+
+<ArticleTeaser
+  components={{ h1: (props) => <TitleLink slug={preflight.slug} {...props} /> }}
+  markdown={preflight}
+  href={`/articles/${preflight.slug}`}
+  class="xl:col-span-8 col-span-12"
+  cta="Wire the preflight pipeline"
+/>
+
+<hr class="col-span-12 my-10 opacity-20" />
+
+<h2 class="col-span-12 font-display text-3xl md:text-4xl">Roadmap</h2>
+
+<div class="col-span-12 xl:col-span-8">
+  <ul class="list-disc pl-4 space-y-1">
+    <li>Issue triage bot with GitHub App permissions</li>
+    <li>Automatic changelog generator with grouped sections</li>
+    <li>Deployment chatops command with audit log</li>
+  </ul>
+  <p class="mt-4 text-sm opacity-70">
+    I ship new articles as soon as they clear review. Check the card above or subscribe to the RSS feed.
+  </p>
+</div>

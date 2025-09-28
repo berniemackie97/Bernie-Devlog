@@ -6,38 +6,47 @@ layout: "../../layouts/Issue.astro"
 ---
 
 import { getEntry } from "astro:content";
-import Empty from "../../components/Empty.astro"
+import Empty from "../../components/Empty.astro";
 import ArticleTeaser from "../../components/ArticleTeaser.astro";
 import FancyParagraph from "../../components/Content/FancyParagraph.astro";
 import TitleLink from "../../components/TitleLink.astro";
 
 export const featured_issues = await getEntry(
-    "articles",
-    "featured-issues",
+  "articles",
+  "featured-issues",
 );
-export const sidebar_article = await getEntry("articles", "featured-issues-sidebar");
+export const sidebar_article = await getEntry(
+  "articles",
+  "featured-issues-sidebar",
+);
 
 export const components = {
-  h1: props => <h1 class="col-span-12 text-3xl lg:text-9xl font-display text-center text-balance" {...props} />
-}
+  h1: (props) => (
+    <h1 class="col-span-12 text-3xl lg:text-9xl font-display text-center text-balance" {...props} />
+  ),
+};
 
 # {frontmatter.title}
 
+<div class="col-span-12 xl:col-span-8 mx-auto mt-3">
+  <FancyParagraph>
+    Pick an issue and explore. Automation, observability, and ethical hacking are the active tracks
+    right now. Articles ship as soon as the labs are ready, and every card links to the overview page.
+  </FancyParagraph>
+</div>
+
 <ArticleTeaser
-  components={{ h1: props => <TitleLink slug={featured_issues.slug} {...props} />}}
+  components={{ h1: (props) => <TitleLink slug={featured_issues.slug} {...props} /> }}
   markdown={featured_issues}
   href={`/articles/${featured_issues.slug}`}
   class="xl:col-span-8 col-span-12"
-  cta="Check out "
-  title={featured_issues.data.title}
+  cta="Explore the active issues"
 />
 
 <ArticleTeaser
-  components={{ h1: props => <TitleLink slug={sidebar_article.slug} {...props} />}}
+  components={{ h1: (props) => <TitleLink slug={sidebar_article.slug} {...props} /> }}
   markdown={sidebar_article}
   href={`/articles/${sidebar_article.slug}`}
-  class="lg:col-span-8 xl:col-span-4 xl:sticky top-10 self-start row-span-2 prose-xl col-span-12"
-  cta="Check it out!"
-  title={sidebar_article.data.title}
+  class="lg:col-span-8 xl:col-span-4 xl:sticky top-24 self-start row-span-2 prose-xl col-span-12"
+  cta="Read the welcome guide"
 />
-

@@ -1,0 +1,65 @@
+---
+name: Automation Playbook
+title: Automation Playbook Card
+tagline: Scripts, watchers, and pipelines that stay maintainable.
+art: https://images.unsplash.com/photo-1489515217757-5fd1be406fef?q=80&w=2070&auto=format&fit=crop
+mark: Ops
+featured: true
+priority: 80
+card_path: /cards/automation-playbook
+issue_path: /issues/automation-playbook
+---
+
+import { getEntry } from "astro:content";
+import MarkdownSnippet from "../../components/ArticleTeaser.astro";
+import { paths } from "../../utils/paths";
+
+export const CARD_PATH = frontmatter.card_path ?? paths.cards.automationPlaybook;
+export const ISSUE_PATH = frontmatter.issue_path ?? paths.issues.automationPlaybook;
+
+export const details = await getEntry("articles", "automation-playbook-field-guide");
+
+<Card>
+  <ArtSection>
+    <Top>
+      <Name>{frontmatter.name}</Name>
+      <Tagline>{frontmatter.tagline}</Tagline>
+      <Mark>{frontmatter.mark}</Mark>
+    </Top>
+
+    <Art src={frontmatter.art} />
+
+    <Box>
+      <p>What we cover</p>
+      <BoxList>
+        * Tooling workspaces
+        * File system watchers
+        * Pull request triage bots
+        * Preflight pipelines
+        * Guardrails in CI
+      </BoxList>
+    </Box>
+  </ArtSection>
+
+  <Body>
+    Learn how to take a manual task, script it, and promote it to shared automation without losing control.
+  </Body>
+
+  <Tip>Every automation ships with docs, tests, and a dry run mode.</Tip>
+
+  <Button class="card-cta" href={CARD_PATH} aria-label="Read more about Automation Playbook">
+    Read More
+  </Button>
+</Card>
+
+<More>
+  ## Why this issue exists
+
+  We kept repeating the same firefighting tasks. The playbook captures the automations that stuck and shows the decision making behind each stage.
+
+  ## Articles
+
+  <div class="border p-4">
+    <MarkdownSnippet markdown={details} href={ISSUE_PATH} cta="Open the issue" />
+  </div>
+</More>

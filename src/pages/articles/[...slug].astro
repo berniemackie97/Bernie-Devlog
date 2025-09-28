@@ -25,17 +25,29 @@ const issue = await getCollection("issues", ({ data }) => {
   title={entry.data.title}
   frontmatter={entry.data}
 >
-  <div class="grid grid-cols-12 break-words hyphens-auto">
+  <div class="grid grid-cols-12 gap-y-10 lg:gap-x-10 break-words hyphens-auto">
+    <aside class="order-1 col-span-12 px-2 md:px-10 lg:hidden">
+      <details class="group rounded-2xl border border-base-content/20 bg-base-100/70 p-4">
+        <summary class="flex cursor-pointer items-center justify-between text-xs font-semibold uppercase tracking-[0.3em] text-base-content/70">
+          Contents
+          <span class="text-[0.65rem] font-normal tracking-normal text-base-content/50 group-open:hidden">Open</span>
+          <span class="hidden text-[0.65rem] font-normal tracking-normal text-base-content/50 group-open:inline">Close</span>
+        </summary>
+        <div class="mt-4">
+          <TableOfContents headings={headings} variant="minimal" title="Contents" />
+        </div>
+      </details>
+    </aside>
+
     <div
       transition:name={entry.data.title}
-      class="px-2 lg:order-1 order-2 col-span-12 lg:col-span-9 prose prose-xl md:px-10"
+      class="order-2 lg:order-1 col-span-12 lg:col-span-9 px-2 md:px-10 prose prose-xl"
     >
       <Content components={{ More: More, FancyParagraph }} />
     </div>
-    <div
-      class="text-primary order-1 col-span-12 lg:col-span-3 lg:sticky top-10 h-fit"
-    >
+
+    <aside class="order-3 hidden px-2 lg:col-span-3 lg:block lg:sticky lg:top-24 h-fit">
       <TableOfContents headings={headings} />
-    </div>
+    </aside>
   </div>
 </Layout>
